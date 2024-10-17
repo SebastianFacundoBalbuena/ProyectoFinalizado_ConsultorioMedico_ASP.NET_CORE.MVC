@@ -1,0 +1,127 @@
+﻿@model ConsultorioMedico.Models.Paciente;
+@{
+    ViewData["Title"] = "Perfil";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+        var listaTurnos = ViewData["ListaTurnosActivos"] as List<TurnosActivos>;
+    
+}
+
+<div class="card text-center">
+    <div class="card-header" style="background:#b4c5e4"></div>
+    <div class="card-body">
+        <h5 class="card-title">Perfil de usuario</h5>
+        <a asp-controller="Home" asp-action="CerrarSesion" class="btn btn-danger">Cerrar Sesion</a>
+    </div>
+    <div class="card-header" style="background:#b4c5e4"></div>
+</div>
+
+<br />
+
+<div class="row">
+    <div class="card-header" style="background:#b4c5e4">Informacion del usuario</div>
+    <form asp-controller="Home" asp-action="Perfil" method="post" class="row">
+    <div class="col-sm-6">
+        <br />
+        <div class="card">
+            
+            <div class="card-body">
+                
+                <label  class="form-label">Nombre</label>
+                <input  class="form-control" name="Nombre" value="@Model.Nombre" required>
+
+                <label class="form-label">Apellido</label>
+                    <input class="form-control" name="Apellido" value="@Model.Apellido" required>
+
+                <label class="form-label">Contacto</label>
+                    <input class="form-control" name="Contacto" value="@Model.Contacto" required>
+
+                <label class="form-label">Email</label>
+                <input class="form-control" id="Email" readonly value="@Model.Email">
+
+                <label class="form-label">Contraseña</label>
+                    <input type="password" class="form-control" name="Contraseña" value="@Model.Clave" required>
+
+                
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <br />
+        <div class="card">
+            <div class="card-body">
+                <label class="form-label">Sexo</label>
+                    <input class="form-control" name="Sexo" value="@Model.Sexo" required>
+
+                <label class="form-label">Tipo De Sangre</label>
+                    <input class="form-control" name="Sangre" value="@Model.TipoDeSangre" required>
+
+                <label class="form-label">DNI</label>
+                <input class="form-control" id="DNI" readonly value="@Model.Dni">
+
+                <label class="form-label">Fecha de nacimiento</label>
+                    <input class="form-control" name="fechaNacimiento" value="@Model.FechaDeNacimiento" placeholder="yyyy-MM-dd" required>
+                <br />
+
+                    @if(ViewData["Error"] != null)
+                    {
+                        <div class="alert alert-danger">
+                            @ViewData["Error"]
+                        </div>
+                        <br />
+                    }
+
+                <button type="submit" class="btn btn-success">Guardar Cambios </button>
+              
+            </div>
+           
+        </div>
+         
+    </div>
+     </form>
+</div>
+
+ <br />
+
+<div class="card text-center">
+    <div class="card-header" style="background:#b4c5e4">Proximos turnos :</div>
+    <div class="card-body">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Medico</th>
+                    <th>Especialidad</th>
+                    <th>Paciente</th>
+                    <th>Motivo</th>
+                    <th>Fecha y Hora</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (listaTurnos != null)
+                {
+                    foreach (var item in listaTurnos)
+                    {
+                        <tr>
+                            <td>@item.Medico</td>
+                            <td>@item.Especialidad</td>
+                            <td>@item.Paciente</td>
+                            <td>@item.Motivo</td>
+                            <td>@item.FechaHoraTurno</td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                     Por el momento no cuenta con turnos activos...
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="card-header" style="background:#b4c5e4">Historial medico</div>
+    <div class="card-body">
+
+    </div>
+    <div class="card-footer text-muted"></div>
+</div>

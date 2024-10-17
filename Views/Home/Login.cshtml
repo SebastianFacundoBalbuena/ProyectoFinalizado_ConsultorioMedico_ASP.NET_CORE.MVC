@@ -1,0 +1,40 @@
+﻿@model ConsultorioMedico.Models.UsuarioARegistrar;
+@{
+    ViewData["Title"] = "Login";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<br />
+<br />
+<div class="row row-cols-1 row-cols-md-3 g-4">
+    <div class="col" style="width:400px"></div>
+    <div class="card h-100" style="width:600px">
+        <div class="card" style="top:10px;background:#b4c5e4; height:90px; display:flex;justify-content:center;align-items:center">
+            <label style="font-size:50px; color:aliceblue">Iniciar Sesion</label>
+        </div>
+        <div class="card-body">
+            <form asp-controller="Home" asp-action="Login" method="post">
+                <div class="mb-3">
+                    <label class="form-label">Correo</label>
+                    <input class="form-control" asp-for="Correo" required />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Contraseña</label>
+                    <input type="password" class="form-control" asp-for="Clave" required/>
+                </div>
+                <button type="submit" class="btn btn-primary">Iniciar Sesion</button>
+                <br />
+                <br />
+                @if (ViewData["Mensaje"] != null)
+                {
+                    <div class="alert alert-danger" role="alert">
+                        @ViewData["Mensaje"];
+                    </div>
+                }
+                 Aun no tienes cuenta? <a asp-controller="Home" asp-action="Registrarse" >Registrarse</a>
+                
+            </form>
+        </div>
+    </div>
+</div>
+

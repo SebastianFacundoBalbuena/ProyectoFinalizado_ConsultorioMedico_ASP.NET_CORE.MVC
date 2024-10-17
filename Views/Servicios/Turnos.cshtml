@@ -1,0 +1,72 @@
+﻿@model List<ConsultorioMedico.Models.Especialidad>;
+@{
+    ViewData["Title"] = "Turnos";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var medicos = ViewBag.Medicos;
+
+}
+
+
+<br />
+<div class="row row-cols-1 row-cols-md-3 g-4">
+    <div class="col" style="width:400px"></div>
+    <div class="card h-100" style="width:600px">
+        <div class="card" style="top:10px">
+            <img src="https://osperyh.org.ar/wp-content/uploads/2023/12/turnos-medicos.jpg" style="object-fit: cover; width: 100%; height: 200px;" alt="Error" />
+        </div>
+        <div class="card-body">
+            <form asp-controller="Servicios" asp-action="Turnos" method="post" onsubmit="return VerificarFecha()">
+                <div class="row row-cols-1 row-cols-md-3 g-4">
+                    <div class="col">
+                    <label class="form-label">Nombre</label>
+                    <input style="width:150px" class="form-control" value="@ViewData["Nombre"]" readonly />
+                    </div>
+                   
+                    <div class="col">
+                    <label class="form-label">Apellido</label>                  
+                    <input  style="width:150px" class="form-control" value="@ViewData["Apellido"]" readonly />
+                    </div>
+
+                    <div class="col">
+                        <label  class="form-label">DNI</label>
+                        <input  style="width:150px" class="form-control" value="@ViewData["DNI"]" readonly />
+                    </div>
+
+                    <br />
+                    <div class="col">
+                    <label class="form-label">Especialidad</label>
+                        <input name="IdEspecialidad" type="hidden" id="InputEspecialidad" class="form-control" value="" readonly />
+                    <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false" style="width:180px">
+                            Especialidad
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1" id="desplegable">
+
+                            @foreach (var item in Model)
+                            {
+                                <li  class="dropdown-item" onclick="CambiarEspecialidad('@item.Id','@item.Nombre')">@item.Nombre</li>
+
+
+                            }
+                        </ul>
+                    </div>
+                    </div>
+                    <div style="margin-left:10px; width:215px" class="col">
+                        <label class="form-label">Fecha y Hora</label>
+                        <input id="fechaHoraInput" type="datetime-local" name="FechaHora" class="form-control" required />
+                    </div>
+                </div>
+                <div class="mb-3">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Motivo</label>
+                    <textarea name="Motivo" id="BarraDeMotivo" class="form-control" rows="3"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Aceptar</button>
+            </form>
+        </div>
+        <script src="~/js/MisScripts.js"></script>
+    </div>
+</div>
+
