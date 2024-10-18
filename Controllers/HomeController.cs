@@ -115,6 +115,7 @@ namespace ConsultorioMedico.Controllers
                                     if (medico.IdEspecialidad == especialidad.Id)
                                     {
                                         TurnosActivos NewTurnoActivo = new TurnosActivos();
+                                        NewTurnoActivo.Id = Turno.Id;
                                         NewTurnoActivo.Medico = medico.Nombre + " " + medico.Apellido;
                                         NewTurnoActivo.Especialidad = especialidad.Nombre;
                                         NewTurnoActivo.Paciente = paciente.Nombre + " " + paciente.Apellido;
@@ -203,6 +204,11 @@ namespace ConsultorioMedico.Controllers
         {
             HttpContext.Session.Remove("IdUsuario");
             return RedirectToAction("Index", "Home");
+        }
+
+        public IActionResult RedirigirContactos()
+        {
+            return Redirect(Url.Action("Index", "Home") + "#contacto");
         }
 
     }

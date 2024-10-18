@@ -89,5 +89,51 @@ namespace ConsultorioMedico.Controllers
             }
 
         }
+
+
+        [HttpGet]
+        public IActionResult VerTurno(int id,string medico,string especialidad,string paciente, string motivo, string fecha)
+        {
+            var IdUsuario = HttpContext.Session.GetInt32("IdUsuario");
+            var TurnoDelUsuario = DBcontext.Turnos.FirstOrDefault(t=>t.Id == id);
+
+            try
+            {
+                TurnosActivos activo = new TurnosActivos();
+                activo.Id = id;
+                activo.Medico = medico;
+                activo.Especialidad = especialidad;
+                activo.Paciente = paciente;
+                activo.Motivo = motivo;
+                activo.FechaHoraTurno = fecha;
+
+                ViewData["TurnoActivo"] = activo;
+
+                return View();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+
+            
+        }
+
+        public IActionResult EliminarTurno(int IdTurno)
+        {
+            var Turno = DBcontext.Turnos.FirstOrDefault(t=>t.Id == IdTurno);
+
+            if(Turno != null)
+            {
+
+                DBcontext.Turnos.Remove(Turno);
+                DBcontext.SaveChanges();
+
+            }
+
+            return RedirectToAction("Perfil","Home");
+        }
     }
 }

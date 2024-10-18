@@ -1,0 +1,61 @@
+﻿
+@{
+    ViewData["Title"] = "VerTurno";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var Turno = ViewData["TurnoActivo"] as TurnosActivos;
+
+}
+
+<br />
+
+<div class="row row-cols-1 row-cols-md-3 g-4">
+    <div class="col" style="width:380px"></div>
+    <div class="card h-100" style="width:630px">
+        <div class="card" style="top:10px">
+            <img src="https://osperyh.org.ar/wp-content/uploads/2023/12/turnos-medicos.jpg" style="object-fit: cover; width: 100%; height: 200px;" alt="Error" />
+        </div>
+        <div class="card-body">
+              
+                <div class="row row-cols-1 row-cols-md-3 g-4">
+                    <div class="col">
+                        <label class="form-label">Medico</label>
+                        <input style="width:180px" class="form-control" value="@Turno.Medico" readonly />
+                    </div>
+
+                    <div class="col">
+                        <label class="form-label">Especialidad</label>
+                    <input style="width:170px" class="form-control" value="@Turno.Especialidad" readonly />
+                    </div>
+
+                    <div class="col">
+                        <label class="form-label">Paciente</label>
+                    <input style="width:190px" class="form-control" value="@Turno.Paciente" readonly />
+                    </div>
+
+                    <div class="col">
+                        <label class="form-label">Fecha a presentarse</label>
+                    <input style="width:180px" class="form-control" value="@Turno.FechaHoraTurno" readonly />
+                    </div>
+
+                    <div class="col">
+                        <label class="form-label">Estado</label>
+                    <input style="width:140px" class="form-control" value="Activo ✅" readonly />
+                    </div>
+
+                    <br />
+
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Motivo</label>
+                    <textarea  class="form-control" rows="5" readonly>@Turno.Motivo</textarea>
+                </div>
+                <a asp-controller="Home" asp-action="Perfil" class="btn btn-primary">Volver</a>
+                <a asp-controller="Servicios" asp-action="EliminarTurno" asp-route-IdTurno="@Turno.Id" class="btn btn-danger">Dar de baja</a>
+           
+        </div>
+        <script src="~/js/MisScripts.js"></script>
+    </div>
+</div>
+

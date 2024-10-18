@@ -3,8 +3,8 @@
     ViewData["Title"] = "Perfil";
     Layout = "~/Views/Shared/_Layout.cshtml";
 
-        var listaTurnos = ViewData["ListaTurnosActivos"] as List<TurnosActivos>;
-    
+    var listaTurnos = ViewData["ListaTurnosActivos"] as List<TurnosActivos>;
+
 }
 
 <div class="card text-center">
@@ -21,49 +21,49 @@
 <div class="row">
     <div class="card-header" style="background:#b4c5e4">Informacion del usuario</div>
     <form asp-controller="Home" asp-action="Perfil" method="post" class="row">
-    <div class="col-sm-6">
-        <br />
-        <div class="card">
-            
-            <div class="card-body">
-                
-                <label  class="form-label">Nombre</label>
-                <input  class="form-control" name="Nombre" value="@Model.Nombre" required>
+        <div class="col-sm-6">
+            <br />
+            <div class="card">
 
-                <label class="form-label">Apellido</label>
+                <div class="card-body">
+
+                    <label class="form-label">Nombre</label>
+                    <input class="form-control" name="Nombre" value="@Model.Nombre" required>
+
+                    <label class="form-label">Apellido</label>
                     <input class="form-control" name="Apellido" value="@Model.Apellido" required>
 
-                <label class="form-label">Contacto</label>
+                    <label class="form-label">Contacto</label>
                     <input class="form-control" name="Contacto" value="@Model.Contacto" required>
 
-                <label class="form-label">Email</label>
-                <input class="form-control" id="Email" readonly value="@Model.Email">
+                    <label class="form-label">Email</label>
+                    <input class="form-control" id="Email" readonly value="@Model.Email">
 
-                <label class="form-label">Contraseña</label>
+                    <label class="form-label">Contraseña</label>
                     <input type="password" class="form-control" name="Contraseña" value="@Model.Clave" required>
 
-                
+
+                </div>
             </div>
         </div>
-    </div>
-    <div class="col-sm-6">
-        <br />
-        <div class="card">
-            <div class="card-body">
-                <label class="form-label">Sexo</label>
+        <div class="col-sm-6">
+            <br />
+            <div class="card">
+                <div class="card-body">
+                    <label class="form-label">Sexo</label>
                     <input class="form-control" name="Sexo" value="@Model.Sexo" required>
 
-                <label class="form-label">Tipo De Sangre</label>
+                    <label class="form-label">Tipo De Sangre</label>
                     <input class="form-control" name="Sangre" value="@Model.TipoDeSangre" required>
 
-                <label class="form-label">DNI</label>
-                <input class="form-control" id="DNI" readonly value="@Model.Dni">
+                    <label class="form-label">DNI</label>
+                    <input class="form-control" id="DNI" readonly value="@Model.Dni">
 
-                <label class="form-label">Fecha de nacimiento</label>
+                    <label class="form-label">Fecha de nacimiento</label>
                     <input class="form-control" name="fechaNacimiento" value="@Model.FechaDeNacimiento" placeholder="yyyy-MM-dd" required>
-                <br />
+                    <br />
 
-                    @if(ViewData["Error"] != null)
+                    @if (ViewData["Error"] != null)
                     {
                         <div class="alert alert-danger">
                             @ViewData["Error"]
@@ -71,17 +71,17 @@
                         <br />
                     }
 
-                <button type="submit" class="btn btn-success">Guardar Cambios </button>
-              
+                    <button type="submit" class="btn btn-success">Guardar Cambios </button>
+
+                </div>
+
             </div>
-           
+
         </div>
-         
-    </div>
-     </form>
+    </form>
 </div>
 
- <br />
+<br />
 
 <div class="card text-center">
     <div class="card-header" style="background:#b4c5e4">Proximos turnos :</div>
@@ -94,6 +94,8 @@
                     <th>Paciente</th>
                     <th>Motivo</th>
                     <th>Fecha y Hora</th>
+                    <th>Ver turno</th>
+                    <th>Dar de baja</th>
                 </tr>
             </thead>
             <tbody>
@@ -105,23 +107,31 @@
                             <td>@item.Medico</td>
                             <td>@item.Especialidad</td>
                             <td>@item.Paciente</td>
-                            <td>@item.Motivo</td>
+                            <td style="max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
+                                onmouseover="this.style.overflow='auto'; this.style.white-space='normal';"
+                                onmouseout="this.style.overflow='hidden'; this.style.white-space='nowrap';">
+                                @item.Motivo
+                            </td>
                             <td>@item.FechaHoraTurno</td>
+                            <td><a asp-controller="Servicios" asp-action="VerTurno" asp-route-id="@item.Id" asp-route-medico="@item.Medico"
+                                asp-route-especialidad="@item.Especialidad" asp-route-paciente="@item.Paciente" 
+                                asp-route-motivo="@item.Motivo" asp-route-fecha="@item.FechaHoraTurno" class="btn btn-success btn-sm">Ver</a></td>
+                            <td><a asp-controller="Servicios" asp-action="EliminarTurno" asp-route-IdTurno="@item.Id" class="btn btn-danger btn-sm">Baja</a></td>
                         </tr>
                     }
                 }
                 else
                 {
                     <tr>
-                     Por el momento no cuenta con turnos activos...
+                        Por el momento no cuenta con turnos activos...
                     </tr>
+                    
                 }
             </tbody>
         </table>
     </div>
     <div class="card-header" style="background:#b4c5e4">Historial medico</div>
     <div class="card-body">
-
     </div>
     <div class="card-footer text-muted"></div>
 </div>

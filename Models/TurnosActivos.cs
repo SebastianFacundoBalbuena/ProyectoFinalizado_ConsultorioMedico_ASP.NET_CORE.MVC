@@ -2,6 +2,9 @@
 {
     public class TurnosActivos
     {
+
+        public int Id { get; set; }
+
         public string Medico {  get; set; }
 
         public string Especialidad {  get; set; }
