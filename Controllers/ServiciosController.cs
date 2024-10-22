@@ -38,6 +38,12 @@ namespace ConsultorioMedico.Controllers
                         ViewData["Nombre"] = paciente.Nombre;
                         ViewData["Apellido"] = paciente.Apellido;
                         ViewData["DNI"] = paciente.Dni;
+
+                        if (ViewData["Esp"] != null)
+                        {
+                            ViewData["Especialidad"] = ViewData["Esp"];
+                        }
+
                     }
 
                     return View(listEsp);
@@ -135,5 +141,6 @@ namespace ConsultorioMedico.Controllers
 
             return RedirectToAction("Perfil","Home");
         }
+
     }
 }

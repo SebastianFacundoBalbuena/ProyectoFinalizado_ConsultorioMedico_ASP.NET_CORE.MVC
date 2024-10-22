@@ -45,8 +45,7 @@
 
                             @foreach (var item in Model)
                             {
-                                <li  class="dropdown-item" onclick="CambiarEspecialidad('@item.Id','@item.Nombre')">@item.Nombre</li>
-
+                                    <li  class="dropdown-item" onclick="CambiarEspecialidad('@item.Id','@item.Nombre')">@item.Nombre</li>
 
                             }
                         </ul>

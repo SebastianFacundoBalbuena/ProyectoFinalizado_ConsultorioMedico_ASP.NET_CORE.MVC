@@ -1,0 +1,53 @@
+﻿@model List<ConsultorioMedico.Models.Medico>;
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<br />
+
+<div class="d-flex justify-content-center my-3">
+    <div class="input-group" style="max-width: 400px">
+        <input class="form-control me-2" type="search" placeholder="Search">
+        <button class="btn btn-outline-success" type="submit">Search</button>
+    </div>
+</div>
+
+<table class="table">
+    <thead style="background-color:#19191a">
+        <tr>
+            <th scope="col" style="color:aliceblue">Nombre</th>
+            <th scope="col" style="color:aliceblue">Apellido</th>
+            <th scope="col" style="color:aliceblue">Contacto</th>
+            <th scope="col" style="color:aliceblue">Especialidad</th>
+            <th scope="col" style="color:aliceblue">Editar</th>
+            <th scope="col" style="color:aliceblue">Eliminar</th>
+        </tr>
+    </thead>
+    <tbody>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Nombre</td>
+                <td>@item.Apellido</td>
+                <td>@item.Contacto</td>
+                <td>@item.IdEspecialidadNavigation.Nombre</td>
+                <td><a asp-controller="AdminMedicos" asp-action="EditarMedico" asp-route-IdMedico="@item.Id" class="btn btn-secondary btn-sm">Editar</a></td>
+                <td><a asp-controller="AdminMedicos" asp-action="EliminarMedico" asp-route-Id="@item.Id" class="btn btn-danger btn-sm">Eliminar</a></td>
+
+            </tr>
+
+        }
+
+    </tbody>
+</table>
+
+<div class="d-flex justify-content-center my-3">
+    <div class="input-group" style="max-width: 250px">
+        <a class="btn btn-outline-success" asp-controller="AdminMedicos" asp-action="AgregarMedico">Agregar nuevo Especialista</a>
+    </div>
+</div>
+
+
+
