@@ -19,6 +19,20 @@ namespace ConsultorioMedico.Controllers
         {
             List<Medico> listMedicos = DBcontext.Medicos.Include(m => m.IdEspecialidadNavigation).ToList();
 
+            int? medicoId = HttpContext.Session.GetInt32("MedicoIdEncontrado");
+            Medico? medicoEncontrado = null;
+
+            if (medicoId != null)
+            {
+                // Buscar al médico por el Id
+                medicoEncontrado = DBcontext.Medicos.Include(x => x.IdEspecialidadNavigation).FirstOrDefault(m => m.Id == medicoId.Value);
+
+                ViewData["MedicoEncontrado"] = medicoEncontrado;
+                HttpContext.Session.Remove("MedicoIdEncontrado");
+
+                return View();
+            }
+
             return View(listMedicos);
         }
 
@@ -80,12 +94,12 @@ namespace ConsultorioMedico.Controllers
         }
 
         [HttpPost]
-        public IActionResult AgregarMedico(string Nombre,string Apellido, string Contacto, int IdEspecialidad)
+        public IActionResult AgregarMedico(string Nombre, string Apellido, string Contacto, int IdEspecialidad)
         {
 
             Medico NewMedico = new Medico();
 
-            if(Nombre != null && Apellido != null && Contacto != null && IdEspecialidad != 0)
+            if (Nombre != null && Apellido != null && Contacto != null && IdEspecialidad != 0)
             {
                 NewMedico.Nombre = Nombre;
                 NewMedico.Apellido = Apellido;
@@ -96,7 +110,36 @@ namespace ConsultorioMedico.Controllers
                 DBcontext.SaveChanges();
             }
 
-            return RedirectToAction("Index","AdminMedicos");
+            return RedirectToAction("Index", "AdminMedicos");
+        }
+
+        [HttpPost]
+        public IActionResult BuscarMedico(string Nombre)
+        {
+            if(Nombre != null)
+            {
+                string[] partes = Nombre.Split(" ");
+
+                if (partes.Length == 2)
+                {
+                    string NombreMedico = partes[0];
+                    string ApellidoMedico = partes[1];
+
+                    Medico? medico = DBcontext.Medicos.Include(x => x.IdEspecialidadNavigation).FirstOrDefault(x => x.Nombre.ToUpper() == NombreMedico.ToUpper() && x.Apellido.ToUpper() == ApellidoMedico.ToUpper());
+
+
+                    if (medico != null)
+                    {
+                        HttpContext.Session.SetInt32("MedicoIdEncontrado", medico.Id);
+                    }
+                }
+
+
+            }
+
+
+
+            return RedirectToAction("Index");
         }
 
     }

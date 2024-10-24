@@ -24,3 +24,4 @@ function VerificarFecha() {
     }
     return true; // Permite el envío del formulario
 }
+

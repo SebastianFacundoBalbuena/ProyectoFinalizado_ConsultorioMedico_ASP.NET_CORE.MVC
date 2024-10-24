@@ -25,6 +25,8 @@ public partial class Paciente
 
     public DateOnly? FechaDeNacimiento { get; set; }
 
+    public bool? Administrador { get; set; }
+
     public virtual ICollection<HistorialMedico> HistorialMedicos { get; set; } = new List<HistorialMedico>();
 
     public virtual ICollection<Turno> Turnos { get; set; } = new List<Turno>();

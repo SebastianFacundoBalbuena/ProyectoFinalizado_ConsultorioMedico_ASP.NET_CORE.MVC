@@ -2,16 +2,18 @@
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    Medico? MedicoEncontrado = ViewData["MedicoEncontrado"] as Medico;
+    ViewData.Remove("MedicoEncontrado");
 }
 
 <br />
 
-<div class="d-flex justify-content-center my-3">
+<form asp-controller="AdminMedicos" asp-action="BuscarMedico" method="post" class="d-flex justify-content-center my-3">
     <div class="input-group" style="max-width: 400px">
-        <input class="form-control me-2" type="search" placeholder="Search">
-        <button class="btn btn-outline-success" type="submit">Search</button>
+        <input id="Barrabuscar" name="Nombre" class="form-control me-2" type="search" placeholder="Buscar : Nombre y Apellido">
+        <button class="btn btn-outline-success" type="submit">Buscar</button>
     </div>
-</div>
+</form>
 
 <table class="table">
     <thead style="background-color:#19191a">
@@ -26,22 +28,44 @@
     </thead>
     <tbody>
 
-        @foreach (var item in Model)
+        @if(MedicoEncontrado != null)
         {
-            <tr>
-                <td>@item.Nombre</td>
-                <td>@item.Apellido</td>
-                <td>@item.Contacto</td>
-                <td>@item.IdEspecialidadNavigation.Nombre</td>
-                <td><a asp-controller="AdminMedicos" asp-action="EditarMedico" asp-route-IdMedico="@item.Id" class="btn btn-secondary btn-sm">Editar</a></td>
-                <td><a asp-controller="AdminMedicos" asp-action="EliminarMedico" asp-route-Id="@item.Id" class="btn btn-danger btn-sm">Eliminar</a></td>
+          
+                <tr>
+                    <td>@MedicoEncontrado.Nombre</td>
+                    <td>@MedicoEncontrado.Apellido</td>
+                    <td>@MedicoEncontrado.Contacto</td>
+                    <td>@MedicoEncontrado.IdEspecialidadNavigation.Nombre</td>
+                    <td><a asp-controller="AdminMedicos" asp-action="EditarMedico" asp-route-IdMedico="@MedicoEncontrado.Id" class="btn btn-secondary btn-sm">Editar</a></td>
+                    <td><a asp-controller="AdminMedicos" asp-action="EliminarMedico" asp-route-Id="@MedicoEncontrado.Id" class="btn btn-danger btn-sm">Eliminar</a></td>
 
-            </tr>
+                </tr>
 
+            
+        }
+        else
+        {
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Nombre</td>
+                    <td>@item.Apellido</td>
+                    <td>@item.Contacto</td>
+                    <td>@item.IdEspecialidadNavigation.Nombre</td>
+                    <td><a asp-controller="AdminMedicos" asp-action="EditarMedico" asp-route-IdMedico="@item.Id" class="btn btn-secondary btn-sm">Editar</a></td>
+                    <td><a asp-controller="AdminMedicos" asp-action="EliminarMedico" asp-route-Id="@item.Id" class="btn btn-danger btn-sm">Eliminar</a></td>
+
+                </tr>
+
+            }
         }
 
     </tbody>
 </table>
+
+<script src="~/js/MisScripts.js"></script>
+<input id="VariableAuxiliar" value="" type="hidden" />
+
 
 <div class="d-flex justify-content-center my-3">
     <div class="input-group" style="max-width: 250px">

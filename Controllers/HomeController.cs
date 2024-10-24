@@ -56,7 +56,7 @@ namespace ConsultorioMedico.Controllers
         [HttpGet]
         public IActionResult Login()
         {
-
+            ViewData["Admin"] = "NoAdmin";
 
             return View();
         }
@@ -77,6 +77,9 @@ namespace ConsultorioMedico.Controllers
             }
 
             HttpContext.Session.SetInt32("IdUsuario", usuarios.Id);
+
+
+            
             var Id = HttpContext.Session.GetInt32("IdUsuario");
             return RedirectToAction("Index");
         }
