@@ -1,0 +1,61 @@
+﻿@model List<ConsultorioMedico.Models.Turno>;
+@{
+    ViewData["Title"] = "Inicio";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<br />
+<br />
+
+<table class="table" >
+    <div class="card-header" style="background:#b4c5e4; justify-content:center; align-content:center; display:flex" >Turnos activos</div>
+    <thead >
+        <tr>
+            <th scope="col">Nombre y Apellido</th>
+            <th scope="col">DNI</th>
+            <th scope="col">Fecha asignada</th>
+            <th scope="col">Ver Turno</th>
+            <th scope="col">Devolucion</th>
+            <th scope="col">Estado</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            @foreach (var item in Model)
+            {
+                <td>@item.IdPacienteNavigation.Nombre   @item.IdPacienteNavigation.Apellido</td>
+                <td>DNI</td>
+                <td>@item.FechaDeTurno</td>
+                <td><a class="btn btn-success btn-sm">Ver turno</a></td>
+                <td><a class="btn btn-secondary btn-sm">Enviar Devolucion</a></td>
+                <td>Pendiente</td>
+            }
+        </tr>
+    </tbody>
+</table>
+
+<br />
+
+<table class="table">
+    <div class="card-header" style="background:#b4c5e4; justify-content:center; align-content:center; display:flex">Historial de turnos finalizados</div>
+    <thead>
+        <tr>
+            <th scope="col">Nombre y Apellido</th>
+            <th scope="col">DNI</th>
+            <th scope="col">Devolucion</th>
+            <th scope="col">Estado</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            @foreach (var item in Model)
+            {
+                <td>@item.IdPacienteNavigation.Nombre @item.IdPacienteNavigation.Apellido</td>
+                <td>DNI</td>
+                <td><a class="btn btn-secondary btn-sm">Editar devolucion</a></td>
+                <td>Finalizado</td>
+            }
+        </tr>
+    </tbody>
+</table>
+

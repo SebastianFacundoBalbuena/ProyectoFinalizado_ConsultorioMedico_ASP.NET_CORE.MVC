@@ -16,6 +16,11 @@ namespace ConsultorioMedico.Controllers
 
         public IActionResult Servicios()
         {
+            var Usuario = HttpContext.Session.GetInt32("IdUsuario");
+            if (Usuario != null)
+            {
+                ViewData["Admin"] = 0;
+            }
             return View();
         }
 
@@ -25,6 +30,12 @@ namespace ConsultorioMedico.Controllers
             try
             {
                 var Usuario = HttpContext.Session.GetInt32("IdUsuario");
+
+                if (Usuario != null)
+                {
+                    ViewData["Admin"] = 0;
+                }
+
                 if (Usuario != null)
                 {
                     List<Especialidad> listEsp = DBcontext.Especialidads.ToList();
@@ -102,6 +113,11 @@ namespace ConsultorioMedico.Controllers
         {
             var IdUsuario = HttpContext.Session.GetInt32("IdUsuario");
             var TurnoDelUsuario = DBcontext.Turnos.FirstOrDefault(t=>t.Id == id);
+
+            if (IdUsuario != null)
+            {
+                ViewData["Admin"] = 0;
+            }
 
             try
             {

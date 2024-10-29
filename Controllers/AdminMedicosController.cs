@@ -15,25 +15,57 @@ namespace ConsultorioMedico.Controllers
 
 
 
-        public IActionResult Index()
+        public IActionResult Inicio()
         {
-            List<Medico> listMedicos = DBcontext.Medicos.Include(m => m.IdEspecialidadNavigation).ToList();
+            var Admin = HttpContext.Session.GetInt32("Admin");
 
-            int? medicoId = HttpContext.Session.GetInt32("MedicoIdEncontrado");
-            Medico? medicoEncontrado = null;
-
-            if (medicoId != null)
+            if(Admin != null && Admin != 0)
             {
-                // Buscar al médico por el Id
-                medicoEncontrado = DBcontext.Medicos.Include(x => x.IdEspecialidadNavigation).FirstOrDefault(m => m.Id == medicoId.Value);
+                ViewData["Admin"] = 1;
 
-                ViewData["MedicoEncontrado"] = medicoEncontrado;
-                HttpContext.Session.Remove("MedicoIdEncontrado");
+                List<Turno> ListaTurnos = new List<Turno>();
+                ListaTurnos = DBcontext.Turnos.Include(p=>p.IdPacienteNavigation).ToList();
 
-                return View();
+
+                return View(ListaTurnos);
             }
 
-            return View(listMedicos);
+            return RedirectToAction("Index", "Home");
+        }
+
+        public IActionResult Index()
+        {
+
+            var Admin = HttpContext.Session.GetInt32("Admin");
+            
+            if(Admin != null && Admin == 1)
+            {
+                ViewData["Admin"] = 1;
+
+                List<Medico> listMedicos = DBcontext.Medicos.Include(m => m.IdEspecialidadNavigation).ToList();
+
+                int? medicoId = HttpContext.Session.GetInt32("MedicoIdEncontrado");
+                Medico? medicoEncontrado = null;
+
+                if (medicoId != null)
+                {
+                    // Buscar al médico por el Id
+                    medicoEncontrado = DBcontext.Medicos.Include(x => x.IdEspecialidadNavigation).FirstOrDefault(m => m.Id == medicoId.Value);
+
+                    ViewData["MedicoEncontrado"] = medicoEncontrado;
+                    HttpContext.Session.Remove("MedicoIdEncontrado");
+
+                    return View();
+                }
+
+                return View(listMedicos);
+            }
+            else
+            {
+                return RedirectToAction("Login", "Home");
+            }
+
+
         }
 
         [HttpGet]

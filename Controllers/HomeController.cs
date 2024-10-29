@@ -56,14 +56,13 @@ namespace ConsultorioMedico.Controllers
         [HttpGet]
         public IActionResult Login()
         {
-            ViewData["Admin"] = "NoAdmin";
-
             return View();
         }
 
         [HttpPost]
         public IActionResult Login(UsuarioARegistrar usuario)
         {
+
             Paciente? usuarios = DBcontext.Pacientes.FirstOrDefault(x => x.Email == usuario.Correo && x.Clave == usuario.Clave);
             
             if(usuario.Correo == null || usuario.Clave == null)
@@ -74,6 +73,10 @@ namespace ConsultorioMedico.Controllers
             {
                 ViewData["Mensaje"] = "El usuario ingresado no existe";
                 return View();
+            }else if(usuarios.Administrador == true)
+            {
+                HttpContext.Session.SetInt32("Admin", 1);
+                return RedirectToAction("Inicio", "AdminMedicos");
             }
 
             HttpContext.Session.SetInt32("IdUsuario", usuarios.Id);
@@ -88,6 +91,12 @@ namespace ConsultorioMedico.Controllers
 
         public IActionResult Index()
         {
+            var Usuario = HttpContext.Session.GetInt32("IdUsuario");
+            if (Usuario != null)
+            {
+                ViewData["Admin"] = 0;
+            }
+
             return View();
         }
 
@@ -97,6 +106,12 @@ namespace ConsultorioMedico.Controllers
             try
             {
                 var IdUsuario = HttpContext.Session.GetInt32("IdUsuario");
+
+               
+                if (IdUsuario != null)
+                {
+                    ViewData["Admin"] = 0;
+                }
 
                 //Guardando lista de turnos
                 List<Turno>? TurnosDelUsuario = DBcontext.Turnos.Where(t => t.IdPaciente == IdUsuario && t.Estado == true).ToList();
@@ -205,8 +220,21 @@ namespace ConsultorioMedico.Controllers
 
         public IActionResult CerrarSesion()
         {
-            HttpContext.Session.Remove("IdUsuario");
+            var Usuario = HttpContext.Session.GetInt32("IdUsuario");
+            var Medico = HttpContext.Session.GetInt32("Admin");
+
+            if(Usuario != null)
+            {
+                HttpContext.Session.Remove("IdUsuario");
+                return RedirectToAction("Index", "Home");
+            }else if(Medico != null)
+            {
+                HttpContext.Session.Remove("Admin");
+                return RedirectToAction("Index", "Home");
+            }
+
             return RedirectToAction("Index", "Home");
+
         }
 
         public IActionResult RedirigirContactos()
