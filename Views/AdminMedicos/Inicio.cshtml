@@ -2,6 +2,9 @@
 @{
     ViewData["Title"] = "Inicio";
     Layout = "~/Views/Shared/_Layout.cshtml";
+
+        List<Turno>? devoluciones = ViewData["Devoluciones"] as List<Turno>;
+    
 }
 
 <br />
@@ -57,24 +60,28 @@
         <tr>
             <th scope="col">Nombre y Apellido</th>
             <th scope="col">DNI</th>
+            <th>Especialidad</th>
             <th scope="col">Devolucion</th>
             <th scope="col">Estado</th>
         </tr>
     </thead>
     <tbody>
-        
-            @foreach (var item in Model)
+        @if(devoluciones != null)
+        {
+            @foreach (var item in devoluciones)
             {
                 <tr>
 
-                <td>@item.IdPacienteNavigation.Nombre @item.IdPacienteNavigation.Apellido</td>
-                <td>@item.IdPacienteNavigation.Dni</td>
-                <td><a class="btn btn-secondary btn-sm">Editar devolucion</a></td>
-                <td>Finalizado</td>
+                    <td>@item.IdPacienteNavigation.Nombre @item.IdPacienteNavigation.Apellido</td>
+                    <td>@item.IdPacienteNavigation.Dni</td>
+                    <td>@item.IdMedicoNavigation.IdEspecialidadNavigation.Nombre</td>
+                    <td>@item.Devolucion</td>
+                    <td>Finalizado</td>
 
                 </tr>
             }
-        
+        }
+
     </tbody>
 </table>
 

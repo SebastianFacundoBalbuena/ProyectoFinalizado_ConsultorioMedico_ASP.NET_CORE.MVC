@@ -1,5 +1,6 @@
 using ConsultorioMedico.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System.Diagnostics;
 using System.Globalization;
@@ -92,10 +93,13 @@ namespace ConsultorioMedico.Controllers
         public IActionResult Index()
         {
             var Usuario = HttpContext.Session.GetInt32("IdUsuario");
+            
+
             if (Usuario != null)
             {
                 ViewData["Admin"] = 0;
             }
+
 
             return View();
         }
@@ -107,14 +111,19 @@ namespace ConsultorioMedico.Controllers
             {
                 var IdUsuario = HttpContext.Session.GetInt32("IdUsuario");
                 var Admin = HttpContext.Session.GetInt32("Admin");
+                List<Turno> ListaDevoluciones = DBcontext.Turnos.Include(m => m.IdMedicoNavigation.IdEspecialidadNavigation).Include(p => p.IdPacienteNavigation).Where(d => d.Devolucion != null && d.IdPaciente == IdUsuario).ToList();
 
-               
+
                 if (IdUsuario != null)
                 {
                     ViewData["Admin"] = 0;
                 }else if(Admin != null)
                 {
                     return RedirectToAction("Inicio", "AdminMedicos");
+                }
+                if (ListaDevoluciones != null)
+                {
+                    ViewData["Devoluciones"] = ListaDevoluciones;
                 }
 
                 //Guardando lista de turnos
@@ -193,13 +202,35 @@ namespace ConsultorioMedico.Controllers
 
                     paciente.Nombre = Nombre;
                     paciente.Apellido = Apellido;
-                    paciente.Contacto = int.Parse(Contacto);
+
+                    try
+                    {
+                        paciente.Contacto = int.Parse(Contacto);
+                    }
+                    catch (Exception)
+                    {
+
+                        ViewData["ErrorContacto"] = "Asegurese de que el formato 'Contacto' sea numerico";
+                        return View(paciente);
+                    }
+
+                    
                     paciente.Clave = Contraseña;
                     paciente.Sexo = Sexo;
                     paciente.TipoDeSangre = Sangre;
-                    DateTime fechavieja = DateTime.ParseExact(fechaNacimiento, "dd/M/yyyy", CultureInfo.InvariantCulture);
-                    string nuevaFecha = fechavieja.ToString("yyyy-MM-dd");
-                    paciente.FechaDeNacimiento = DateOnly.ParseExact(nuevaFecha, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+
+                    try
+                    {
+                        DateTime fechavieja = DateTime.ParseExact(fechaNacimiento, "yyyy/MM/dd", CultureInfo.InvariantCulture);
+                        string nuevaFecha = fechavieja.ToString("yyyy-MM-dd");
+                        paciente.FechaDeNacimiento = DateOnly.ParseExact(nuevaFecha, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+                    }
+                    catch (Exception)
+                    {
+
+                        ViewData["ErrorFecha"] = "Asegurese de que el formato 'Fecha' sea: YYYY/MM/dd";
+                        return View(paciente);
+                    }
 
                     DBcontext.Pacientes.Update(paciente);
                     DBcontext.SaveChanges();
@@ -244,6 +275,26 @@ namespace ConsultorioMedico.Controllers
         public IActionResult RedirigirContactos()
         {
             return Redirect(Url.Action("Index", "Home") + "#contacto");
+        }
+
+        public IActionResult VerDevolucion(int Id)
+        {
+            try
+            {
+                Turno? devolucion = DBcontext.Turnos.Include(m => m.IdMedicoNavigation).Include(p => p.IdPacienteNavigation).Include(e => e.IdMedicoNavigation.IdEspecialidadNavigation).FirstOrDefault(x=>x.Id == Id);
+
+                if(devolucion != null)
+                {
+                    return View(devolucion);
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+
+            return View();
         }
 
     }

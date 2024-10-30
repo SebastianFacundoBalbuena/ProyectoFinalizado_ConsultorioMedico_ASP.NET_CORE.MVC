@@ -4,6 +4,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 
     var listaTurnos = ViewData["ListaTurnosActivos"] as List<TurnosActivos>;
+    var Devoluciones = ViewData["Devoluciones"] as List<Turno>;
 
 }
 
@@ -57,10 +58,10 @@
                     <input class="form-control" name="Sangre" value="@Model.TipoDeSangre" required>
 
                     <label class="form-label">DNI</label>
-                    <input class="form-control" id="DNI" readonly value="@Model.Dni">
+                    <input type="number" class="form-control" id="DNI" readonly value="@Model.Dni">
 
                     <label class="form-label">Fecha de nacimiento</label>
-                    <input class="form-control" name="fechaNacimiento" value="@Model.FechaDeNacimiento" placeholder="yyyy-MM-dd" required>
+                    <input class="form-control" name="fechaNacimiento" value="@Model.FechaDeNacimiento" placeholder="Formato:  yyyy/MM/dd" required>
                     <br />
 
                     @if (ViewData["Error"] != null)
@@ -70,7 +71,20 @@
                         </div>
                         <br />
                     }
-
+                    @if (ViewData["ErrorFecha"] != null)
+                    {
+                        <div class="alert alert-danger">
+                            @ViewData["ErrorFecha"]
+                        </div>
+                        <br />
+                    }
+                    @if (ViewData["ErrorContacto"] != null)
+                    {
+                        <div class="alert alert-danger">
+                            @ViewData["ErrorContacto"]
+                        </div>
+                        <br />
+                    }
                     <button type="submit" class="btn btn-success">Guardar Cambios </button>
 
                 </div>
@@ -120,18 +134,39 @@
                         </tr>
                     }
                 }
-                else
-                {
-                    <tr>
-                        Por el momento no cuenta con turnos activos...
-                    </tr>
-                    
-                }
             </tbody>
         </table>
     </div>
     <div class="card-header" style="background:#b4c5e4">Historial medico</div>
     <div class="card-body">
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Nombre y Apellido</th>
+                    <th scope="col">DNI</th>
+                    <th scope="col">Especialidad</th>
+                    <th scope="col">Devolucion</th>
+                    <th>Ver Devolucion</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if(Devoluciones != null)
+                {
+                    @foreach (var item in Devoluciones)
+                    {
+                        <tr>
+                            <th>@item.IdPacienteNavigation.Nombre @item.IdPacienteNavigation.Apellido</th>
+                            <td>@item.IdPacienteNavigation.Dni</td>
+                            <td>@item.IdMedicoNavigation.IdEspecialidadNavigation.Nombre</td>
+                            <td>@item.Devolucion</td>
+                            <td><a asp-controller="Home" asp-action="VerDevolucion" asp-route-Id="@item.Id" class="btn btn-secondary btn-sm">Ver</a></td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+
     </div>
     <div class="card-footer text-muted"></div>
 </div>

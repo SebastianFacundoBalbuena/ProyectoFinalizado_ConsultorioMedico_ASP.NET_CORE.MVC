@@ -18,14 +18,19 @@ namespace ConsultorioMedico.Controllers
         public IActionResult Inicio()
         {
             var Admin = HttpContext.Session.GetInt32("Admin");
+            List<Turno>? listaDevoluciones = DBcontext.Turnos.Include(m=>m.IdMedicoNavigation.IdEspecialidadNavigation).Include(p=>p.IdPacienteNavigation).Where(t=>t.Devolucion != null).ToList();
 
             if(Admin != null && Admin != 0)
             {
                 ViewData["Admin"] = 1;
 
                 List<Turno> ListaTurnos = new List<Turno>();
-                ListaTurnos = DBcontext.Turnos.Include(p=>p.IdPacienteNavigation).Include(m=>m.IdMedicoNavigation).Include(e=>e.IdMedicoNavigation.IdEspecialidadNavigation).ToList();
+                ListaTurnos = DBcontext.Turnos.Include(p=>p.IdPacienteNavigation).Include(m=>m.IdMedicoNavigation).Include(e=>e.IdMedicoNavigation.IdEspecialidadNavigation).Where(e=>e.Estado == true).ToList();
 
+                if(listaDevoluciones != null)
+                {
+                    ViewData["Devoluciones"] = listaDevoluciones;
+                }
 
 
                 return View(ListaTurnos);
@@ -120,17 +125,26 @@ namespace ConsultorioMedico.Controllers
         [HttpGet]
         public IActionResult AgregarMedico()
         {
+            var Admin = HttpContext.Session.GetInt32("Admin");
 
-            List<Especialidad> especialidades = DBcontext.Especialidads.ToList();
+            if (Admin != null && Admin == 1)
+            {
+                ViewData["Admin"] = 1;
+                List<Especialidad> especialidades = DBcontext.Especialidads.ToList();
 
-            return View(especialidades);
+                return View(especialidades);
+            }
+
+            return RedirectToAction("Login", "Home");
+
         }
 
         [HttpPost]
         public IActionResult AgregarMedico(string Nombre, string Apellido, string Contacto, int IdEspecialidad)
         {
 
-            Medico NewMedico = new Medico();
+
+                Medico NewMedico = new Medico();
 
             if (Nombre != null && Apellido != null && Contacto != null && IdEspecialidad != 0)
             {
@@ -180,22 +194,54 @@ namespace ConsultorioMedico.Controllers
         [HttpGet]
         public IActionResult Devolucion(string id, string medico, string paciente, string motivo,string especialidad,string DNI)
         {
-            TurnosActivos activo = new TurnosActivos();
-            activo.Id = int.Parse(id);
-            activo.Medico = medico;
-            activo.Paciente = paciente;
-            activo.pacienteDNI = DNI;
-            activo.Motivo = motivo;
-            activo.Especialidad = especialidad;
-            
+            var Admin = HttpContext.Session.GetInt32("Admin");
 
-            return View(activo);
+            if(Admin != null && Admin == 1)
+            {
+
+                ViewData["Admin"] = 1;
+
+                TurnosActivos activo = new TurnosActivos();
+                activo.Id = int.Parse(id);
+                activo.Medico = medico;
+                activo.Paciente = paciente;
+                activo.pacienteDNI = DNI;
+                activo.Motivo = motivo;
+                activo.Especialidad = especialidad;
+
+
+                return View(activo);
+            }
+
+            return RedirectToAction("Login", "Home");
+
         }
 
         [HttpPost]
-        public IActionResult Devolucion()
+        public IActionResult Devolucion(string Id,string Devolucion)
         {
+            try
+            {
+                if(Id != null && Devolucion != null)
+                {
+                    Turno? turno = DBcontext.Turnos.FirstOrDefault(t => t.Id == int.Parse(Id));
 
+                    if(turno != null)
+                    {
+                        turno.Devolucion = Devolucion;
+                        turno.Estado = false;
+                        DBcontext.Turnos.Update(turno);
+                        DBcontext.SaveChanges();
+
+                        return RedirectToAction("Inicio", "AdminMedicos");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
 
             return View();
         }
