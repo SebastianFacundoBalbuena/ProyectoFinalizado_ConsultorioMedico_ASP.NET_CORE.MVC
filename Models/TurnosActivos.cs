@@ -11,7 +11,7 @@
 
         public string Paciente {  get; set; }
 
-
+        public string pacienteDNI { get; set; }
         public string Motivo {  get; set; }
 
         public string FechaHoraTurno { get; set; }

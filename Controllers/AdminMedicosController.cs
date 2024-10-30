@@ -24,7 +24,8 @@ namespace ConsultorioMedico.Controllers
                 ViewData["Admin"] = 1;
 
                 List<Turno> ListaTurnos = new List<Turno>();
-                ListaTurnos = DBcontext.Turnos.Include(p=>p.IdPacienteNavigation).ToList();
+                ListaTurnos = DBcontext.Turnos.Include(p=>p.IdPacienteNavigation).Include(m=>m.IdMedicoNavigation).Include(e=>e.IdMedicoNavigation.IdEspecialidadNavigation).ToList();
+
 
 
                 return View(ListaTurnos);
@@ -174,5 +175,29 @@ namespace ConsultorioMedico.Controllers
             return RedirectToAction("Index");
         }
 
+
+
+        [HttpGet]
+        public IActionResult Devolucion(string id, string medico, string paciente, string motivo,string especialidad,string DNI)
+        {
+            TurnosActivos activo = new TurnosActivos();
+            activo.Id = int.Parse(id);
+            activo.Medico = medico;
+            activo.Paciente = paciente;
+            activo.pacienteDNI = DNI;
+            activo.Motivo = motivo;
+            activo.Especialidad = especialidad;
+            
+
+            return View(activo);
+        }
+
+        [HttpPost]
+        public IActionResult Devolucion()
+        {
+
+
+            return View();
+        }
     }
 }

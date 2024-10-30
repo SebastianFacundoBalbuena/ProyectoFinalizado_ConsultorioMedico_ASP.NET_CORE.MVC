@@ -106,11 +106,15 @@ namespace ConsultorioMedico.Controllers
             try
             {
                 var IdUsuario = HttpContext.Session.GetInt32("IdUsuario");
+                var Admin = HttpContext.Session.GetInt32("Admin");
 
                
                 if (IdUsuario != null)
                 {
                     ViewData["Admin"] = 0;
+                }else if(Admin != null)
+                {
+                    return RedirectToAction("Inicio", "AdminMedicos");
                 }
 
                 //Guardando lista de turnos

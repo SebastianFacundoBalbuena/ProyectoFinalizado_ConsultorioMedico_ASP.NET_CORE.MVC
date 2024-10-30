@@ -17,6 +17,8 @@ public partial class Turno
 
     public string? Motivo { get; set; }
 
+    public string? Devolucion { get; set; }
+
     public virtual ICollection<HistorialMedico> HistorialMedicos { get; set; } = new List<HistorialMedico>();
 
     public virtual Medico? IdMedicoNavigation { get; set; }

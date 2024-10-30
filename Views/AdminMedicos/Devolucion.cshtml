@@ -1,0 +1,57 @@
+﻿@model ConsultorioMedico.Models.TurnosActivos;
+@{
+    ViewData["Title"] = "Devolucion";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<br />
+<div class="row row-cols-1 row-cols-md-3 g-4">
+    <div class="col" style="width:400px"></div>
+    <div class="card h-100" style="width:600px">
+        <div class="card" style="top:10px">
+            <img src="https://osperyh.org.ar/wp-content/uploads/2023/12/turnos-medicos.jpg" style="object-fit: cover; width: 100%; height: 200px;" alt="Error" />
+        </div>
+        <div class="card-body">
+            <form asp-controller="AdminMedicos" asp-action="Devolucion">
+                <div class="row row-cols-1 row-cols-md-3 g-4">
+                    <input name="Id" style="width:150px" type="hidden" value="@Model.Id" readonly />
+                    <div class="col">
+                        <label class="form-label">Medico</label>
+                        <input name="Medico" style="width:150px" class="form-control" value="@Model.Medico" readonly />
+                    </div>
+
+                    <div class="col">
+                        <label class="form-label">Especialidad</label>
+                        <input name="Especialidad" style="width:150px" class="form-control" value="@Model.Especialidad" readonly />
+                    </div>
+
+                    <div class="col">
+                        <label class="form-label">Paciente</label>
+                        <input name="Paciente" style="width:150px" class="form-control" value="@Model.Paciente" readonly />
+                    </div>
+
+                    <br />
+                    <div class="col">
+                        <label class="form-label">Paciente( DNI )</label>
+                        <input name="DNI" style="width:150px" class="form-control" value="@Model.pacienteDNI" readonly />
+                    </div>
+
+                </div>
+                <div class="mb-3" style="overflow:scroll">
+                    <label class="form-label">Motivo</label>
+                    <textarea name="Motivo" id="BarraDeMotivo" class="form-control" rows="2" readonly>@Model.Motivo</textarea>
+                </div>
+                <div class="mb-3"></div>
+                <div class="mb-3">
+                    <label class="form-label">Devolucion</label>
+                    <textarea name="Devolucion" id="BarraDeMotivo" class="form-control" rows="3"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Aceptar</button>
+                <a class="btn btn-danger" asp-controller="AdminMedicos" asp-action="Inicio">Cancelar</a>
+            </form>
+        </div>
+        <script src="~/js/MisScripts.js"></script>
+    </div>
+</div>
+
+

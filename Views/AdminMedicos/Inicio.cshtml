@@ -20,21 +20,36 @@
         </tr>
     </thead>
     <tbody>
-        <tr>
             @foreach (var item in Model)
             {
+                <tr>
+
                 <td>@item.IdPacienteNavigation.Nombre   @item.IdPacienteNavigation.Apellido</td>
-                <td>DNI</td>
+                <td>@item.IdPacienteNavigation.Dni</td>
                 <td>@item.FechaDeTurno</td>
-                <td><a class="btn btn-success btn-sm">Ver turno</a></td>
-                <td><a class="btn btn-secondary btn-sm">Enviar Devolucion</a></td>
+                <td>
+                    <a class="btn btn-success btn-sm" asp-controller="Servicios" asp-action="VerTurno" asp-route-id="@item.Id" asp-route-medico="@item.IdMedicoNavigation.Nombre @item.IdMedicoNavigation.Apellido"
+                       asp-route-paciente="@item.IdPacienteNavigation.Nombre @item.IdPacienteNavigation.Apellido"
+                       asp-route-motivo="@item.Motivo" asp-route-fecha="@item.FechaDeTurno">Ver turno</a>
+                </td>
+                <td>
+                    <a class="btn btn-secondary btn-sm" asp-controller="AdminMedicos" asp-action="Devolucion" asp-route-id="@item.Id" asp-route-medico="@item.IdMedicoNavigation.Nombre @item.IdMedicoNavigation.Apellido"
+                       asp-route-paciente="@item.IdPacienteNavigation.Nombre @item.IdPacienteNavigation.Apellido"
+                       asp-route-motivo="@item.Motivo" asp-route-DNI="@item.IdPacienteNavigation.Dni"
+                    asp-route-especialidad="@item.IdMedicoNavigation.IdEspecialidadNavigation.Nombre">Enviar Devolucion</a>
+                </td>
                 <td>Pendiente</td>
+
+                </tr>
             }
-        </tr>
     </tbody>
 </table>
 
+
+
 <br />
+
+
 
 <table class="table">
     <div class="card-header" style="background:#b4c5e4; justify-content:center; align-content:center; display:flex">Historial de turnos finalizados</div>
@@ -47,15 +62,19 @@
         </tr>
     </thead>
     <tbody>
-        <tr>
+        
             @foreach (var item in Model)
             {
+                <tr>
+
                 <td>@item.IdPacienteNavigation.Nombre @item.IdPacienteNavigation.Apellido</td>
-                <td>DNI</td>
+                <td>@item.IdPacienteNavigation.Dni</td>
                 <td><a class="btn btn-secondary btn-sm">Editar devolucion</a></td>
                 <td>Finalizado</td>
+
+                </tr>
             }
-        </tr>
+        
     </tbody>
 </table>
 

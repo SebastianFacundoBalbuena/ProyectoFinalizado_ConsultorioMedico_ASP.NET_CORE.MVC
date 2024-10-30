@@ -79,7 +79,7 @@ namespace ConsultorioMedico.Controllers
             {
 
                 Paciente? paciente = DBcontext.Pacientes.FirstOrDefault(p => p.Id == HttpContext.Session.GetInt32("IdUsuario"));
-                Medico? medico = DBcontext.Medicos.FirstOrDefault(m => m.IdEspecialidad == int.Parse(IdEspecialidad));
+                Medico? medico = DBcontext.Medicos.FirstOrDefault(m => m.IdEspecialidad.ToString() == IdEspecialidad);
                 Turno NewTurno = new Turno();
 
                 if(paciente != null && medico != null)
@@ -118,13 +118,38 @@ namespace ConsultorioMedico.Controllers
             {
                 ViewData["Admin"] = 0;
             }
+            else
+            {
+                var Admin = HttpContext.Session.GetInt32("Admin");
+                if(Admin != null)
+                {
+                    ViewData["Admin"] = 1;
+                }
+            }
 
             try
             {
                 TurnosActivos activo = new TurnosActivos();
                 activo.Id = id;
                 activo.Medico = medico;
-                activo.Especialidad = especialidad;
+
+                if(especialidad != null)
+                {
+                    activo.Especialidad = especialidad;
+                }
+                else
+                {
+                    string[] partes = medico.Split(" ");
+                    string Nombre = partes[0];
+                    string Apellido = partes[1];
+
+                    
+                    Medico? medicoEncontrado = DBcontext.Medicos.Include(e=>e.IdEspecialidadNavigation).FirstOrDefault(n => n.Nombre == Nombre && n.Apellido == Apellido);
+                    activo.Especialidad = medicoEncontrado.IdEspecialidadNavigation.Nombre;
+
+                }
+                
+
                 activo.Paciente = paciente;
                 activo.Motivo = motivo;
                 activo.FechaHoraTurno = fecha;
