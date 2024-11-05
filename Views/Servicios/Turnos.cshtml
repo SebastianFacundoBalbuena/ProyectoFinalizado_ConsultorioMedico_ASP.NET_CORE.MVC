@@ -52,10 +52,46 @@
                     </div>
                     </div>
                     <div style="margin-left:10px; width:215px" class="col">
-                        <label class="form-label">Fecha y Hora</label>
-                        <input id="fechaHoraInput" type="datetime-local" name="FechaHora" class="form-control" required />
+                        <label class="form-label">  Lunes a Viernes </label>
+                        <input id="fechaHoraInput" type="date" name="Fecha" class="form-control" required />
+                    </div>
+                    <div style="margin-left:10px; width:140px" class="col">
+                        <label class="form-label" style="margin-left:10px"> 08hs a 18hs</label>
+                        <div style="display: flex; gap: 7px;">
+                            <select class="form-control" name="Hora"  style="width:50px;">
+                                <option value="08">08</option>
+                                <option value="09">09</option>
+                                <option value="10">10</option>
+                                <option value="11">11</option>
+                                <option value="12">12</option>
+                                <option value="13">13</option>
+                                <option value="14">14</option>
+                                <option value="15">15</option>
+                                <option value="16">16</option>
+                                <option value="17">17</option>
+                                <option value="18">18</option>
+                            </select>
+                            <select class="form-control" name="Minutos"  style="width:50px;">
+                                <option value="00">00</option>
+                                <option value="30">30</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
+                @if (ViewData["ErrorEsp"] != null)
+                {<br />
+                    <div class="alert alert-danger" role="alert">
+                        @ViewData["ErrorEsp"]
+                    </div>
+                }
+                @if (ViewData["Ocupado"] != null)
+                {
+                    <br />
+                    <div class="alert alert-danger" role="alert">
+                        @ViewData["Ocupado"]
+                    </div>
+                    
+                }
                 <div class="mb-3">
                 </div>
                 <div class="mb-3">

@@ -30,10 +30,23 @@ namespace ConsultorioMedico.Controllers
             try
             {
                 var Usuario = HttpContext.Session.GetInt32("IdUsuario");
+                var mensaje = HttpContext.Session.GetString("Mensaje");
+                var Ocupado = HttpContext.Session.GetString("Ocupado");
+
+                if(mensaje != null)
+                {
+                    ViewData["ErrorEsp"] = mensaje;
+                    HttpContext.Session.Remove("Mensaje");
+                }
 
                 if (Usuario != null)
                 {
                     ViewData["Admin"] = 0;
+                }
+                if(Ocupado != null)
+                {
+                    ViewData["Ocupado"] = Ocupado;
+                    HttpContext.Session.Remove("Ocupado");
                 }
 
                 if (Usuario != null)
@@ -73,7 +86,7 @@ namespace ConsultorioMedico.Controllers
         }
 
         [HttpPost]
-        public IActionResult Turnos(string IdEspecialidad, string Motivo,DateTime FechaHora)
+        public IActionResult Turnos(string IdEspecialidad, string Motivo,DateTime Fecha,string Hora,string Minutos)
         {
             try
             {
@@ -82,19 +95,53 @@ namespace ConsultorioMedico.Controllers
                 Medico? medico = DBcontext.Medicos.FirstOrDefault(m => m.IdEspecialidad.ToString() == IdEspecialidad);
                 Turno NewTurno = new Turno();
 
-                if(paciente != null && medico != null)
+                if (paciente != null && medico != null)
                 {
-                    
+
 
                     NewTurno.IdMedico = medico.Id;
                     NewTurno.IdPaciente = paciente.Id;
                     NewTurno.Estado = true;
                     NewTurno.Motivo = Motivo;
-                    string fecha = FechaHora.ToString("yyyy-MM-dd HH:mm");
-                    NewTurno.FechaDeTurno = DateTime.Parse(fecha);
+
+
+                    string fecha = Fecha.ToString("yyyy-MM-dd");
+                    string horacompleta = Hora +":"+ Minutos;
+                    string hora = DateTime.Parse(horacompleta).ToString("HH:mm");
+                    string? especialidad = DBcontext.Especialidads.FirstOrDefault(x => x.Id == int.Parse(IdEspecialidad)).Nombre;
+
+                    if(fecha != null && hora != null)
+                    {
+                        List<Turno> listTurnos = DBcontext.Turnos.Include(m=>m.IdMedicoNavigation.IdEspecialidadNavigation).Where(t=>t.Estado == true).ToList();
+                        foreach (var item in listTurnos)
+                        {
+                            string fechaa = DateTime.Parse(item.FechaDeTurno.ToString()).ToString("yyyy-MM-dd");
+                            string horaa = DateTime.Parse(item.FechaDeTurno.ToString()).ToString("HH:mm");
+                            string esp = item.IdMedicoNavigation.IdEspecialidadNavigation.Nombre;
+
+                            if(fechaa == fecha && horaa == hora && esp == especialidad)
+                            {
+                                
+                                HttpContext.Session.SetString("Ocupado", "Fecha u hora ocupadas. Seleccione otra");
+                                return RedirectToAction("Turnos", "Servicios");
+                            }
+
+                        }
+
+                        string fechaCompleta = "" + fecha + " " + hora + "";
+                        NewTurno.FechaDeTurno = DateTime.ParseExact(fechaCompleta, "yyyy-MM-dd HH:mm", null);
+                    }
+
+                    
 
                     DBcontext.Turnos.Add(NewTurno);
                     DBcontext.SaveChanges();
+                }
+                else
+                {
+                   
+                    HttpContext.Session.SetString("Mensaje", "Seleccione una especialidad");
+                    return RedirectToAction("Turnos","Servicios");
                 }
 
                 return RedirectToAction("Index","Home");

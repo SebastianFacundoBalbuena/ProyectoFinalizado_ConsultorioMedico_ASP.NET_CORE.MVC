@@ -85,6 +85,13 @@
                         </div>
                         <br />
                     }
+                    @if (ViewData["GuardadoExitoso"] != null)
+                    {
+                        <div class="alert alert-success">
+                            @ViewData["GuardadoExitoso"]
+                        </div>
+                        <br />
+                    }
                     <button type="submit" class="btn btn-success">Guardar Cambios </button>
 
                 </div>

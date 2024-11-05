@@ -17,6 +17,10 @@ public partial class Medico
 
     public bool? Administrador { get; set; }
 
+    public string? Email {  get; set; }
+
+    public string? Clave {  get; set; }
+
     public virtual Especialidad? IdEspecialidadNavigation { get; set; }
 
     public virtual ICollection<Turno> Turnos { get; set; } = new List<Turno>();

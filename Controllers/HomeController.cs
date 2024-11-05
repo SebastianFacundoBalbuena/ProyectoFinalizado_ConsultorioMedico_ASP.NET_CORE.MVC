@@ -27,7 +27,7 @@ namespace ConsultorioMedico.Controllers
         {
             Paciente? PacienteRegistrado = DBcontext.Pacientes.FirstOrDefault(p => p.Email == newUsuario.Correo || p.Dni == newUsuario.DNI);
 
-            if(PacienteRegistrado == null)
+            if (PacienteRegistrado == null)
             {
                 Paciente usuario = new Paciente();
                 usuario.Nombre = newUsuario.Nombre;
@@ -35,7 +35,7 @@ namespace ConsultorioMedico.Controllers
                 usuario.Dni = newUsuario.DNI;
                 usuario.Email = newUsuario.Correo;
                 usuario.Clave = newUsuario.Clave;
-                
+
 
                 if (usuario.Dni == 0 || usuario.Email == null || usuario.Clave == null)
                 {
@@ -49,7 +49,7 @@ namespace ConsultorioMedico.Controllers
                 }
 
             }
-        
+
 
             return RedirectToAction("Login");
         }
@@ -65,26 +65,39 @@ namespace ConsultorioMedico.Controllers
         {
 
             Paciente? usuarios = DBcontext.Pacientes.FirstOrDefault(x => x.Email == usuario.Correo && x.Clave == usuario.Clave);
-            
-            if(usuario.Correo == null || usuario.Clave == null)
+            Medico? Medico = DBcontext.Medicos.FirstOrDefault(x => x.Email == usuario.Correo && x.Clave == usuario.Clave);
+
+            if (usuario.Correo == null || usuario.Clave == null)
             {
                 ViewData["Mensaje"] = "Los campos son requeridos";
                 return View();
-            }else if (usuarios == null)
+            }
+
+            if (usuarios != null)
+            {
+                HttpContext.Session.SetInt32("IdUsuario", usuarios.Id);
+                return RedirectToAction("Index");
+
+            }
+            else if (Medico != null)
+            {
+
+                if (Medico.Administrador == true)
+                {
+                    HttpContext.Session.SetInt32("Admin", 1);
+                    HttpContext.Session.SetInt32("MedicoId", Medico.Id);
+                    return RedirectToAction("Inicio", "AdminMedicos");
+                }
+
+
+            }
+            else
             {
                 ViewData["Mensaje"] = "El usuario ingresado no existe";
                 return View();
-            }else if(usuarios.Administrador == true)
-            {
-                HttpContext.Session.SetInt32("Admin", 1);
-                return RedirectToAction("Inicio", "AdminMedicos");
             }
 
-            HttpContext.Session.SetInt32("IdUsuario", usuarios.Id);
 
-
-            
-            var Id = HttpContext.Session.GetInt32("IdUsuario");
             return RedirectToAction("Index");
         }
 
@@ -93,7 +106,7 @@ namespace ConsultorioMedico.Controllers
         public IActionResult Index()
         {
             var Usuario = HttpContext.Session.GetInt32("IdUsuario");
-            
+
 
             if (Usuario != null)
             {
@@ -105,7 +118,7 @@ namespace ConsultorioMedico.Controllers
         }
 
         [HttpGet]
-       public IActionResult Perfil()
+        public IActionResult Perfil()
         {
             try
             {
@@ -117,7 +130,8 @@ namespace ConsultorioMedico.Controllers
                 if (IdUsuario != null)
                 {
                     ViewData["Admin"] = 0;
-                }else if(Admin != null)
+                }
+                else if (Admin != null)
                 {
                     return RedirectToAction("Inicio", "AdminMedicos");
                 }
@@ -162,7 +176,7 @@ namespace ConsultorioMedico.Controllers
                     }
                 }
 
-                if(turnosActivos.Count != 0)
+                if (turnosActivos.Count != 0)
                 {
                     ViewData["ListaTurnosActivos"] = turnosActivos;
                 }
@@ -171,7 +185,7 @@ namespace ConsultorioMedico.Controllers
                     ViewData["ListaTurnosActivos"] = null;
                 }
 
-                
+
                 //-----------------------------------------------------------------------------------------------------------------
 
 
@@ -191,14 +205,15 @@ namespace ConsultorioMedico.Controllers
         }
 
         [HttpPost]
-        public IActionResult Perfil(string Nombre,string Apellido, string Contacto, string Contraseña, string Sexo, string Sangre,string fechaNacimiento)
+        public IActionResult Perfil(string Nombre, string Apellido, string Contacto, string Contraseña, string Sexo, string Sangre, string fechaNacimiento)
         {
             var IdUsuario = HttpContext.Session.GetInt32("IdUsuario");
             Paciente? paciente = DBcontext.Pacientes.FirstOrDefault(p => p.Id == IdUsuario);
 
             try
             {
-                if(Nombre != null && Apellido  != null && Contacto != null && Contraseña != null && Sexo != null && Sangre != null && fechaNacimiento != null){
+                if (Nombre != null && Apellido != null && Contacto != null && Contraseña != null && Sexo != null && Sangre != null && fechaNacimiento != null)
+                {
 
                     paciente.Nombre = Nombre;
                     paciente.Apellido = Apellido;
@@ -214,7 +229,7 @@ namespace ConsultorioMedico.Controllers
                         return View(paciente);
                     }
 
-                    
+
                     paciente.Clave = Contraseña;
                     paciente.Sexo = Sexo;
                     paciente.TipoDeSangre = Sangre;
@@ -232,6 +247,8 @@ namespace ConsultorioMedico.Controllers
                         return View(paciente);
                     }
 
+
+                    ViewData["GuardadoExitoso"] = "¡Datos guardados exitosamente!";
                     DBcontext.Pacientes.Update(paciente);
                     DBcontext.SaveChanges();
                 }
@@ -241,7 +258,7 @@ namespace ConsultorioMedico.Controllers
                     return View(paciente);
                 }
 
-                
+
             }
             catch (Exception ex)
             {
@@ -250,7 +267,7 @@ namespace ConsultorioMedico.Controllers
             }
 
 
-            return RedirectToAction("Perfil","Home");
+            return View(paciente);
         }
 
         public IActionResult CerrarSesion()
@@ -258,11 +275,12 @@ namespace ConsultorioMedico.Controllers
             var Usuario = HttpContext.Session.GetInt32("IdUsuario");
             var Medico = HttpContext.Session.GetInt32("Admin");
 
-            if(Usuario != null)
+            if (Usuario != null)
             {
                 HttpContext.Session.Remove("IdUsuario");
                 return RedirectToAction("Index", "Home");
-            }else if(Medico != null)
+            }
+            else if (Medico != null)
             {
                 HttpContext.Session.Remove("Admin");
                 return RedirectToAction("Index", "Home");
@@ -281,9 +299,9 @@ namespace ConsultorioMedico.Controllers
         {
             try
             {
-                Turno? devolucion = DBcontext.Turnos.Include(m => m.IdMedicoNavigation).Include(p => p.IdPacienteNavigation).Include(e => e.IdMedicoNavigation.IdEspecialidadNavigation).FirstOrDefault(x=>x.Id == Id);
+                Turno? devolucion = DBcontext.Turnos.Include(m => m.IdMedicoNavigation).Include(p => p.IdPacienteNavigation).Include(e => e.IdMedicoNavigation.IdEspecialidadNavigation).FirstOrDefault(x => x.Id == Id);
 
-                if(devolucion != null)
+                if (devolucion != null)
                 {
                     return View(devolucion);
                 }

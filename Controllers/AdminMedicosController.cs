@@ -1,6 +1,8 @@
 ﻿using ConsultorioMedico.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.Net;
 
 namespace ConsultorioMedico.Controllers
 {
@@ -18,21 +20,23 @@ namespace ConsultorioMedico.Controllers
         public IActionResult Inicio()
         {
             var Admin = HttpContext.Session.GetInt32("Admin");
-            List<Turno>? listaDevoluciones = DBcontext.Turnos.Include(m=>m.IdMedicoNavigation.IdEspecialidadNavigation).Include(p=>p.IdPacienteNavigation).Where(t=>t.Devolucion != null).ToList();
+            var MedicoId = HttpContext.Session.GetInt32("MedicoId");
+            List<Turno>? listaDevoluciones = DBcontext.Turnos.Include(m=>m.IdMedicoNavigation.IdEspecialidadNavigation).Include(p=>p.IdPacienteNavigation).Where(t=>t.Devolucion != null && t.IdMedico == MedicoId).ToList();
 
             if(Admin != null && Admin != 0)
             {
                 ViewData["Admin"] = 1;
+               
 
                 List<Turno> ListaTurnos = new List<Turno>();
-                ListaTurnos = DBcontext.Turnos.Include(p=>p.IdPacienteNavigation).Include(m=>m.IdMedicoNavigation).Include(e=>e.IdMedicoNavigation.IdEspecialidadNavigation).Where(e=>e.Estado == true).ToList();
+                ListaTurnos = DBcontext.Turnos.Include(p=>p.IdPacienteNavigation).Include(m=>m.IdMedicoNavigation).Include(e=>e.IdMedicoNavigation.IdEspecialidadNavigation).Where(e=>e.Estado == true && e.IdMedico == MedicoId).ToList();
 
                 if(listaDevoluciones != null)
                 {
                     ViewData["Devoluciones"] = listaDevoluciones;
                 }
 
-
+                ViewData["Especialista"] = DBcontext.Medicos.Include(e=>e.IdEspecialidadNavigation).FirstOrDefault(x => x.Id == MedicoId);
                 return View(ListaTurnos);
             }
 
@@ -90,7 +94,7 @@ namespace ConsultorioMedico.Controllers
         }
 
         [HttpPost]
-        public IActionResult EditarMedico(int IdMedico, string Nombre, string Apellido, string Contacto, int IdEspecialidad)
+        public IActionResult EditarMedico(int IdMedico, string Nombre, string Apellido, string Contacto,string Email,string Clave, int IdEspecialidad)
         {
             Medico? medico = DBcontext.Medicos.FirstOrDefault(x => x.Id == IdMedico);
 
@@ -100,6 +104,8 @@ namespace ConsultorioMedico.Controllers
                 medico.Nombre = Nombre;
                 medico.Apellido = Apellido;
                 medico.Contacto = int.Parse(Contacto);
+                medico.Email = Email;
+                medico.Clave = Clave;
                 medico.IdEspecialidad = IdEspecialidad;
 
                 DBcontext.Medicos.Update(medico);
@@ -140,7 +146,7 @@ namespace ConsultorioMedico.Controllers
         }
 
         [HttpPost]
-        public IActionResult AgregarMedico(string Nombre, string Apellido, string Contacto, int IdEspecialidad)
+        public IActionResult AgregarMedico(string Nombre, string Apellido, string Contacto,string Email,string Clave, int IdEspecialidad)
         {
 
 
@@ -151,7 +157,11 @@ namespace ConsultorioMedico.Controllers
                 NewMedico.Nombre = Nombre;
                 NewMedico.Apellido = Apellido;
                 NewMedico.Contacto = int.Parse(Contacto);
+                NewMedico.Email = Email;
+                NewMedico.Clave = Clave;
                 NewMedico.IdEspecialidad = IdEspecialidad;
+                NewMedico.Administrador = true;
+                
 
                 DBcontext.Medicos.Add(NewMedico);
                 DBcontext.SaveChanges();
@@ -196,6 +206,7 @@ namespace ConsultorioMedico.Controllers
         {
             var Admin = HttpContext.Session.GetInt32("Admin");
 
+
             if(Admin != null && Admin == 1)
             {
 
@@ -236,6 +247,8 @@ namespace ConsultorioMedico.Controllers
                         return RedirectToAction("Inicio", "AdminMedicos");
                     }
                 }
+
+
             }
             catch (Exception ex)
             {

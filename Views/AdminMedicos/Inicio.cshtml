@@ -3,11 +3,27 @@
     ViewData["Title"] = "Inicio";
     Layout = "~/Views/Shared/_Layout.cshtml";
 
-        List<Turno>? devoluciones = ViewData["Devoluciones"] as List<Turno>;
-    
+    List<Turno>? devoluciones = ViewData["Devoluciones"] as List<Turno>;
+    var Especialista = ViewData["Especialista"] as Medico;
+
 }
 
 <br />
+<div class="card text-center" style="display: flex;justify-content:center ;align-items:center;border:none">
+
+    <div class="card text-center" style="width:500px;border:none">
+        <div class="card-header" style="background:#b4c5e4">
+            Especialista
+        </div>
+        <div class="card-body">
+            <h5 class="card-title">@Especialista.Nombre @Especialista.Apellido</h5>
+            <p class="card-text">Email:  @Especialista.Email</p>
+
+        </div>
+        <div class="card-footer text" style="color:black;background:#b4c5e4">@Especialista.IdEspecialidadNavigation.Nombre</div>
+    </div>
+</div>
+
 <br />
 
 <table class="table" >
