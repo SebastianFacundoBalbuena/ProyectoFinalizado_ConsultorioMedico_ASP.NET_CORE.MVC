@@ -26,7 +26,7 @@ function VerificarFecha() {
 
     // Obtener el día de la semana: 0 = Domingo, 6 = Sábado
     const diaSemana = fechaSeleccionada.getDay();
-    if (diaSemana === 0 || diaSemana === 6) { // 0: Domingo, 6: Sábado
+    if (diaSemana === 5 || diaSemana === 6) { // 0: Domingo, 6: Sábado
         alert('Por favor, seleccione una fecha de lunes a viernes.');
         return false; // Evita el envío del formulario
     }
@@ -34,14 +34,17 @@ function VerificarFecha() {
     return true; // Permite el envío del formulario
 }
 
-function IngresarDevolucion() {
+function MostrarClave() {
 
-    const boton = document.getElementById("Devolucion");
-    if (boton.value == "") {
-        alert('Debe ingresar una devolucion para el paciente...');
-        return false;
+    const boton = document.getElementById("marcador");
+    const contraseña = document.getElementById("contraseña");
+
+    if (boton.checked) {
+
+        contraseña.type = "text";
+    } else {
+        contraseña.type = "password";
     }
 
-    return true;
 
 }

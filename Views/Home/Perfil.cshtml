@@ -41,8 +41,11 @@
                     <input class="form-control" id="Email" readonly value="@Model.Email">
 
                     <label class="form-label">Contraseña</label>
-                    <input type="password" class="form-control" name="Contraseña" value="@Model.Clave" required>
+                    <input type="password" class="form-control" id="contraseña" name="Contraseña" value="@Model.Clave" required>
 
+                    <label style="margin:5px">                       
+                        <input class="form-check" type="checkbox" id="marcador" onclick="return MostrarClave()"> Ver contraseña
+                    </label>
 
                 </div>
             </div>
@@ -165,15 +168,19 @@
                         <tr>
                             <th>@item.IdPacienteNavigation.Nombre @item.IdPacienteNavigation.Apellido</th>
                             <td>@item.IdPacienteNavigation.Dni</td>
-                            <td>@item.IdMedicoNavigation.IdEspecialidadNavigation.Nombre</td>
-                            <td>@item.Devolucion</td>
+                            <td >@item.IdMedicoNavigation.IdEspecialidadNavigation.Nombre</td>
+                            <td style="max-width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
+                                onmouseover="this.style.overflow='auto'; this.style.white-space='normal';"
+                                onmouseout="this.style.overflow='hidden'; this.style.white-space='nowrap';">
+                                @item.Devolucion
+                            </td>
                             <td><a asp-controller="Home" asp-action="VerDevolucion" asp-route-Id="@item.Id" class="btn btn-secondary btn-sm">Ver</a></td>
                         </tr>
                     }
                 }
             </tbody>
         </table>
-
+        <script src="~/js/MisScripts.js" ></script>
     </div>
     <div class="card-footer text-muted"></div>
 </div>

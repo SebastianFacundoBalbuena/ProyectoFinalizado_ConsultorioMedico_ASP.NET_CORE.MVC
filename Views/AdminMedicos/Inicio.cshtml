@@ -91,7 +91,11 @@
                     <td>@item.IdPacienteNavigation.Nombre @item.IdPacienteNavigation.Apellido</td>
                     <td>@item.IdPacienteNavigation.Dni</td>
                     <td>@item.IdMedicoNavigation.IdEspecialidadNavigation.Nombre</td>
-                    <td>@item.Devolucion</td>
+                    <td style="max-width: 130px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
+                        onmouseover="this.style.overflow='auto'; this.style.white-space='normal';"
+                        onmouseout="this.style.overflow='hidden'; this.style.white-space='nowrap';">
+                        @item.Devolucion
+                    </td>
                     <td>Finalizado</td>
 
                 </tr>

@@ -1,0 +1,26 @@
+﻿
+@{
+    ViewData["Title"] = "Error";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<br />
+<br />
+<br />
+<br />
+
+<div class="card text-center" style="height:300px">
+
+    <div class="alert alert-dark">
+        Error
+    </div>
+    <div class="card-body">
+        <h5 style="margin:10px" class="card-title">Hubo un error, contactarse con el desarrollador.</h5>
+        <div class="alert alert-danger" style="overflow:auto;margin:10px"><p class="card-text">@ViewData["Error"]</p></div>
+        <a asp-controller="Home" asp-action="Index" class="btn btn-secondary" style="margin:15px">Volver al Inicio</a>
+    </div>
+    <div class="alert alert-dark">
+    </div>
+
+</div>
+

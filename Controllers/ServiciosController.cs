@@ -16,12 +16,21 @@ namespace ConsultorioMedico.Controllers
 
         public IActionResult Servicios()
         {
-            var Usuario = HttpContext.Session.GetInt32("IdUsuario");
-            if (Usuario != null)
+            try
             {
-                ViewData["Admin"] = 0;
+                var Usuario = HttpContext.Session.GetInt32("IdUsuario");
+                if (Usuario != null)
+                {
+                    ViewData["Admin"] = 0;
+                }
+                return View();
             }
-            return View();
+            catch (Exception ex)
+            {
+
+                HttpContext.Session.SetString("Error", ex.Message.ToString());
+                return RedirectToAction("Error", "Home");
+            }
         }
 
         [HttpGet]
@@ -80,7 +89,8 @@ namespace ConsultorioMedico.Controllers
             catch (Exception ex)
             {
 
-                throw ex;
+                HttpContext.Session.SetString("Error", ex.Message.ToString());
+                return RedirectToAction("Error", "Home");
             }
 
         }
@@ -149,7 +159,8 @@ namespace ConsultorioMedico.Controllers
             catch (Exception ex)
             {
 
-                throw ex;
+                HttpContext.Session.SetString("Error", ex.Message.ToString());
+                return RedirectToAction("Error", "Home");
             }
 
         }
@@ -158,24 +169,26 @@ namespace ConsultorioMedico.Controllers
         [HttpGet]
         public IActionResult VerTurno(int id,string medico,string especialidad,string paciente, string motivo, string fecha)
         {
-            var IdUsuario = HttpContext.Session.GetInt32("IdUsuario");
-            var TurnoDelUsuario = DBcontext.Turnos.FirstOrDefault(t=>t.Id == id);
 
-            if (IdUsuario != null)
-            {
-                ViewData["Admin"] = 0;
-            }
-            else
-            {
-                var Admin = HttpContext.Session.GetInt32("Admin");
-                if(Admin != null)
-                {
-                    ViewData["Admin"] = 1;
-                }
-            }
 
             try
             {
+                var IdUsuario = HttpContext.Session.GetInt32("IdUsuario");
+                var TurnoDelUsuario = DBcontext.Turnos.FirstOrDefault(t => t.Id == id);
+
+                if (IdUsuario != null)
+                {
+                    ViewData["Admin"] = 0;
+                }
+                else
+                {
+                    var Admin = HttpContext.Session.GetInt32("Admin");
+                    if (Admin != null)
+                    {
+                        ViewData["Admin"] = 1;
+                    }
+                }
+
                 TurnosActivos activo = new TurnosActivos();
                 activo.Id = id;
                 activo.Medico = medico;
@@ -205,10 +218,11 @@ namespace ConsultorioMedico.Controllers
 
                 return View();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                throw;
+                HttpContext.Session.SetString("Error", ex.Message.ToString());
+                return RedirectToAction("Error", "Home");
             }
 
 
@@ -217,17 +231,26 @@ namespace ConsultorioMedico.Controllers
 
         public IActionResult EliminarTurno(int IdTurno)
         {
-            var Turno = DBcontext.Turnos.FirstOrDefault(t=>t.Id == IdTurno);
+            try
+            {
+                var Turno = DBcontext.Turnos.FirstOrDefault(t => t.Id == IdTurno);
 
-            if(Turno != null)
+                if (Turno != null)
+                {
+
+                    DBcontext.Turnos.Remove(Turno);
+                    DBcontext.SaveChanges();
+
+                }
+
+                return RedirectToAction("Perfil", "Home");
+            }
+            catch (Exception ex)
             {
 
-                DBcontext.Turnos.Remove(Turno);
-                DBcontext.SaveChanges();
-
+                HttpContext.Session.SetString("Error", ex.Message.ToString());
+                return RedirectToAction("Error", "Home");
             }
-
-            return RedirectToAction("Perfil","Home");
         }
 
     }

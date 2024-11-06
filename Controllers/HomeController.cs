@@ -1,4 +1,5 @@
 using ConsultorioMedico.Models;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
@@ -25,33 +26,44 @@ namespace ConsultorioMedico.Controllers
         [HttpPost]
         public IActionResult Registrarse(UsuarioARegistrar newUsuario)
         {
-            Paciente? PacienteRegistrado = DBcontext.Pacientes.FirstOrDefault(p => p.Email == newUsuario.Correo || p.Dni == newUsuario.DNI);
-
-            if (PacienteRegistrado == null)
+            try
             {
-                Paciente usuario = new Paciente();
-                usuario.Nombre = newUsuario.Nombre;
-                usuario.Apellido = newUsuario.Apellido;
-                usuario.Dni = newUsuario.DNI;
-                usuario.Email = newUsuario.Correo;
-                usuario.Clave = newUsuario.Clave;
+                Paciente? PacienteRegistrado = DBcontext.Pacientes.FirstOrDefault(p => p.Email == newUsuario.Correo || p.Dni == newUsuario.DNI);
 
-
-                if (usuario.Dni == 0 || usuario.Email == null || usuario.Clave == null)
+                if (PacienteRegistrado == null)
                 {
-                    ViewData["Mensaje"] = "Algunos campos son requeridos";
-                    return View();
-                }
-                else
-                {
-                    DBcontext.Pacientes.Add(usuario);
-                    DBcontext.SaveChanges();
+                    Paciente usuario = new Paciente();
+                    usuario.Nombre = newUsuario.Nombre;
+                    usuario.Apellido = newUsuario.Apellido;
+                    usuario.Dni = newUsuario.DNI;
+                    usuario.Email = newUsuario.Correo;
+                    usuario.Clave = newUsuario.Clave;
+
+
+                    if (usuario.Dni == 0 || usuario.Email == null || usuario.Clave == null)
+                    {
+                        ViewData["Mensaje"] = "Algunos campos son requeridos";
+                        return View();
+                    }
+                    else
+                    {
+                        DBcontext.Pacientes.Add(usuario);
+                        DBcontext.SaveChanges();
+                    }
+
                 }
 
+
+                return RedirectToAction("Login");
+            }
+            catch (Exception ex)
+            {
+
+                HttpContext.Session.SetString("Error", ex.Message.ToString());
+                return RedirectToAction("Error", "Home");
             }
 
 
-            return RedirectToAction("Login");
         }
 
         [HttpGet]
@@ -64,37 +76,47 @@ namespace ConsultorioMedico.Controllers
         public IActionResult Login(UsuarioARegistrar usuario)
         {
 
-            Paciente? usuarios = DBcontext.Pacientes.FirstOrDefault(x => x.Email == usuario.Correo && x.Clave == usuario.Clave);
-            Medico? Medico = DBcontext.Medicos.FirstOrDefault(x => x.Email == usuario.Correo && x.Clave == usuario.Clave);
-
-            if (usuario.Correo == null || usuario.Clave == null)
+            try
             {
-                ViewData["Mensaje"] = "Los campos son requeridos";
-                return View();
-            }
+                Paciente? usuarios = DBcontext.Pacientes.FirstOrDefault(x => x.Email == usuario.Correo && x.Clave == usuario.Clave);
+                Medico? Medico = DBcontext.Medicos.FirstOrDefault(x => x.Email == usuario.Correo && x.Clave == usuario.Clave);
 
-            if (usuarios != null)
-            {
-                HttpContext.Session.SetInt32("IdUsuario", usuarios.Id);
-                return RedirectToAction("Index");
-
-            }
-            else if (Medico != null)
-            {
-
-                if (Medico.Administrador == true)
+                if (usuario.Correo == null || usuario.Clave == null)
                 {
-                    HttpContext.Session.SetInt32("Admin", 1);
-                    HttpContext.Session.SetInt32("MedicoId", Medico.Id);
-                    return RedirectToAction("Inicio", "AdminMedicos");
+                    ViewData["Mensaje"] = "Los campos son requeridos";
+                    return View();
                 }
 
+                if (usuarios != null)
+                {
+                    HttpContext.Session.SetInt32("IdUsuario", usuarios.Id);
+                    return RedirectToAction("Index");
 
+                }
+                else if (Medico != null)
+                {
+
+                    if (Medico.Administrador == true)
+                    {
+                        HttpContext.Session.SetInt32("Admin", 1);
+                        HttpContext.Session.SetInt32("MedicoId", Medico.Id);
+                        return RedirectToAction("Inicio", "AdminMedicos");
+                    }
+
+
+                }
+                else
+                {
+                    ViewData["Mensaje"] = "El usuario ingresado no existe";
+                    return View();
+                }
             }
-            else
+            catch (Exception ex)
             {
-                ViewData["Mensaje"] = "El usuario ingresado no existe";
-                return View();
+
+
+                HttpContext.Session.SetString("Error", ex.Message.ToString());
+                return RedirectToAction("Error", "Home");
             }
 
 
@@ -105,16 +127,31 @@ namespace ConsultorioMedico.Controllers
 
         public IActionResult Index()
         {
-            var Usuario = HttpContext.Session.GetInt32("IdUsuario");
-
-
-            if (Usuario != null)
+            try
             {
-                ViewData["Admin"] = 0;
+                var Usuario = HttpContext.Session.GetInt32("IdUsuario");
+                var Medico = HttpContext.Session.GetInt32("MedicoId");
+
+
+                if (Usuario != null)
+                {
+                    ViewData["Admin"] = 0;
+                }
+                else if (Medico != null)
+                {
+                    return RedirectToAction("Inicio", "AdminMedicos");
+                }
+
+
+
+                return View();
             }
+            catch (Exception ex)
+            {
 
-
-            return View();
+                HttpContext.Session.SetString("Error", ex.Message.ToString());
+                return RedirectToAction("Error", "Home");
+            }
         }
 
         [HttpGet]
@@ -199,7 +236,8 @@ namespace ConsultorioMedico.Controllers
             catch (Exception ex)
             {
 
-                throw ex;
+                HttpContext.Session.SetString("Error", ex.Message.ToString());
+                return RedirectToAction("Error", "Home");
             }
 
         }
@@ -212,6 +250,8 @@ namespace ConsultorioMedico.Controllers
 
             try
             {
+
+
                 if (Nombre != null && Apellido != null && Contacto != null && Contraseña != null && Sexo != null && Sangre != null && fechaNacimiento != null)
                 {
 
@@ -243,7 +283,7 @@ namespace ConsultorioMedico.Controllers
                     catch (Exception)
                     {
 
-                        ViewData["ErrorFecha"] = "Asegurese de que el formato 'Fecha' sea: YYYY/MM/dd";
+                        ViewData["ErrorFecha"] = "Asegurese de que el formato 'Fecha' sea: yyyy/MM/dd";
                         return View(paciente);
                     }
 
@@ -263,7 +303,8 @@ namespace ConsultorioMedico.Controllers
             catch (Exception ex)
             {
 
-                throw ex;
+                HttpContext.Session.SetString("Error", ex.Message.ToString());
+                return RedirectToAction("Error", "Home");
             }
 
 
@@ -272,21 +313,31 @@ namespace ConsultorioMedico.Controllers
 
         public IActionResult CerrarSesion()
         {
-            var Usuario = HttpContext.Session.GetInt32("IdUsuario");
-            var Medico = HttpContext.Session.GetInt32("Admin");
-
-            if (Usuario != null)
+            try
             {
-                HttpContext.Session.Remove("IdUsuario");
+                var Usuario = HttpContext.Session.GetInt32("IdUsuario");
+                var Medico = HttpContext.Session.GetInt32("Admin");
+
+                if (Usuario != null)
+                {
+                    HttpContext.Session.Remove("IdUsuario");
+                    return RedirectToAction("Index", "Home");
+                }
+                else if (Medico != null)
+                {
+                    HttpContext.Session.Remove("Admin");
+                    HttpContext.Session.Remove("MedicoId");
+                    return RedirectToAction("Index", "Home");
+                }
+
                 return RedirectToAction("Index", "Home");
             }
-            else if (Medico != null)
+            catch (Exception ex)
             {
-                HttpContext.Session.Remove("Admin");
-                return RedirectToAction("Index", "Home");
-            }
 
-            return RedirectToAction("Index", "Home");
+                HttpContext.Session.SetString("Error", ex.Message.ToString());
+                return RedirectToAction("Error", "Home");
+            }
 
         }
 
@@ -305,15 +356,40 @@ namespace ConsultorioMedico.Controllers
                 {
                     return View(devolucion);
                 }
+
+                return View();
             }
             catch (Exception ex)
             {
 
-                throw ex;
+                HttpContext.Session.SetString("Error", ex.Message.ToString());
+                return RedirectToAction("Error", "Home");
+            }
+
+
+        }
+
+
+        public IActionResult Error()
+        {
+            var ErrorGeneral = HttpContext.Features.Get<IExceptionHandlerFeature>();
+            var Error = HttpContext.Session.GetString("Error");
+
+            if (Error != null)
+            {
+                ViewData["Error"] = Error;
+
+            }
+            else if (ErrorGeneral != null)
+            {
+                var captura = ErrorGeneral.Error;
+                var Mensaje = captura.Message;
+
+                ViewData["Error"] = Mensaje;
             }
 
             return View();
-        }
 
+        }
     }
 }
