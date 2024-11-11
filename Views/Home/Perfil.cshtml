@@ -107,10 +107,10 @@
 
 <br />
 
-<div class="card text-center">
+<div class="row">
     <div class="card-header" style="background:#b4c5e4">Proximos turnos :</div>
-    <div class="card-body">
-        <table class="table">
+    <div class="card-body" style="overflow-x: auto; -webkit-overflow-scrolling: touch;">
+        <table class="table" style="min-width: 700px; table-layout: fixed;">
             <thead>
                 <tr>
                     <th>Medico</th>
@@ -137,9 +137,11 @@
                                 @item.Motivo
                             </td>
                             <td>@item.FechaHoraTurno</td>
-                            <td><a asp-controller="Servicios" asp-action="VerTurno" asp-route-id="@item.Id" asp-route-medico="@item.Medico"
-                                asp-route-especialidad="@item.Especialidad" asp-route-paciente="@item.Paciente" 
-                                asp-route-motivo="@item.Motivo" asp-route-fecha="@item.FechaHoraTurno" class="btn btn-success btn-sm">Ver</a></td>
+                            <td>
+                                <a asp-controller="Servicios" asp-action="VerTurno" asp-route-id="@item.Id" asp-route-medico="@item.Medico"
+                                   asp-route-especialidad="@item.Especialidad" asp-route-paciente="@item.Paciente"
+                                   asp-route-motivo="@item.Motivo" asp-route-fecha="@item.FechaHoraTurno" class="btn btn-success btn-sm">Ver</a>
+                            </td>
                             <td><a asp-controller="Servicios" asp-action="EliminarTurno" asp-route-IdTurno="@item.Id" class="btn btn-danger btn-sm">Baja</a></td>
                         </tr>
                     }
@@ -147,10 +149,10 @@
             </tbody>
         </table>
     </div>
-    <div class="card-header" style="background:#b4c5e4">Historial medico</div>
-    <div class="card-body">
 
-        <table class="table">
+    <div class="card-header" style="background:#b4c5e4">Historial medico</div>
+    <div class="card-body" style="overflow-x: auto; -webkit-overflow-scrolling: touch;">
+        <table class="table" style="min-width: 700px; table-layout: fixed;">
             <thead>
                 <tr>
                     <th scope="col">Nombre y Apellido</th>
@@ -161,14 +163,14 @@
                 </tr>
             </thead>
             <tbody>
-                @if(Devoluciones != null)
+                @if (Devoluciones != null)
                 {
                     @foreach (var item in Devoluciones)
                     {
                         <tr>
                             <th>@item.IdPacienteNavigation.Nombre @item.IdPacienteNavigation.Apellido</th>
                             <td>@item.IdPacienteNavigation.Dni</td>
-                            <td >@item.IdMedicoNavigation.IdEspecialidadNavigation.Nombre</td>
+                            <td>@item.IdMedicoNavigation.IdEspecialidadNavigation.Nombre</td>
                             <td style="max-width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
                                 onmouseover="this.style.overflow='auto'; this.style.white-space='normal';"
                                 onmouseout="this.style.overflow='hidden'; this.style.white-space='nowrap';">
@@ -180,7 +182,7 @@
                 }
             </tbody>
         </table>
-        <script src="~/js/MisScripts.js" ></script>
     </div>
+
     <div class="card-footer text-muted"></div>
 </div>
