@@ -26,82 +26,86 @@
 
 <br />
 
-<table class="table" >
-    <div class="card-header" style="background:#b4c5e4; justify-content:center; align-content:center; display:flex" >Turnos activos</div>
-    <thead >
-        <tr>
-            <th scope="col">Nombre y Apellido</th>
-            <th scope="col">DNI</th>
-            <th scope="col">Fecha asignada</th>
-            <th scope="col">Ver Turno</th>
-            <th scope="col">Devolucion</th>
-            <th scope="col">Estado</th>
-        </tr>
-    </thead>
-    <tbody>
-            @foreach (var item in Model)
-            {
+<div class="row">
+    <div class="card-header" style="background:#b4c5e4; display:flex;justify-content:center; align-items:center">Turnos activos</div>
+    <div class="card-body" style="overflow-x: auto; -webkit-overflow-scrolling: touch;">
+        <table class="table" style="min-width: 700px; table-layout: fixed;">
+            <thead>
                 <tr>
-
-                <td>@item.IdPacienteNavigation.Nombre   @item.IdPacienteNavigation.Apellido</td>
-                <td>@item.IdPacienteNavigation.Dni</td>
-                <td>@item.FechaDeTurno</td>
-                <td>
-                    <a class="btn btn-success btn-sm" asp-controller="Servicios" asp-action="VerTurno" asp-route-id="@item.Id" asp-route-medico="@item.IdMedicoNavigation.Nombre @item.IdMedicoNavigation.Apellido"
-                       asp-route-paciente="@item.IdPacienteNavigation.Nombre @item.IdPacienteNavigation.Apellido"
-                       asp-route-motivo="@item.Motivo" asp-route-fecha="@item.FechaDeTurno">Ver turno</a>
-                </td>
-                <td>
-                    <a class="btn btn-secondary btn-sm" asp-controller="AdminMedicos" asp-action="Devolucion" asp-route-id="@item.Id" asp-route-medico="@item.IdMedicoNavigation.Nombre @item.IdMedicoNavigation.Apellido"
-                       asp-route-paciente="@item.IdPacienteNavigation.Nombre @item.IdPacienteNavigation.Apellido"
-                       asp-route-motivo="@item.Motivo" asp-route-DNI="@item.IdPacienteNavigation.Dni"
-                    asp-route-especialidad="@item.IdMedicoNavigation.IdEspecialidadNavigation.Nombre">Enviar Devolucion</a>
-                </td>
-                <td>Pendiente</td>
-
+                    <th scope="col">Nombre y Apellido</th>
+                    <th scope="col">DNI</th>
+                    <th scope="col">Fecha asignada</th>
+                    <th scope="col">Ver Turno</th>
+                    <th scope="col">Devolucion</th>
+                    <th scope="col">Estado</th>
                 </tr>
-            }
-    </tbody>
-</table>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+
+                        <td>@item.IdPacienteNavigation.Nombre   @item.IdPacienteNavigation.Apellido</td>
+                        <td>@item.IdPacienteNavigation.Dni</td>
+                        <td>@item.FechaDeTurno</td>
+                        <td>
+                            <a class="btn btn-success btn-sm" asp-controller="Servicios" asp-action="VerTurno" asp-route-id="@item.Id" asp-route-medico="@item.IdMedicoNavigation.Nombre @item.IdMedicoNavigation.Apellido"
+                               asp-route-paciente="@item.IdPacienteNavigation.Nombre @item.IdPacienteNavigation.Apellido"
+                               asp-route-motivo="@item.Motivo" asp-route-fecha="@item.FechaDeTurno">Ver turno</a>
+                        </td>
+                        <td>
+                            <a class="btn btn-secondary btn-sm" asp-controller="AdminMedicos" asp-action="Devolucion" asp-route-id="@item.Id" asp-route-medico="@item.IdMedicoNavigation.Nombre @item.IdMedicoNavigation.Apellido"
+                               asp-route-paciente="@item.IdPacienteNavigation.Nombre @item.IdPacienteNavigation.Apellido"
+                               asp-route-motivo="@item.Motivo" asp-route-DNI="@item.IdPacienteNavigation.Dni"
+                               asp-route-especialidad="@item.IdMedicoNavigation.IdEspecialidadNavigation.Nombre">Enviar Devolucion</a>
+                        </td>
+                        <td>Pendiente</td>
+
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 
 
-
-<br />
-
+    <br />
 
 
-<table class="table">
-    <div class="card-header" style="background:#b4c5e4; justify-content:center; align-content:center; display:flex">Historial de turnos finalizados</div>
-    <thead>
-        <tr>
-            <th scope="col">Nombre y Apellido</th>
-            <th scope="col">DNI</th>
-            <th>Especialidad</th>
-            <th scope="col">Devolucion</th>
-            <th scope="col">Estado</th>
-        </tr>
-    </thead>
-    <tbody>
-        @if(devoluciones != null)
-        {
-            @foreach (var item in devoluciones)
-            {
+    <div class="card-header" style="background:#b4c5e4; justify-content:center; align-content:center; display:flex; margin:10px">Historial de turnos finalizados</div>
+    <div class="card-body" style="overflow-x: auto; -webkit-overflow-scrolling: touch;">
+        <table class="table" style="min-width: 700px; table-layout: fixed;">
+
+            <thead>
                 <tr>
-
-                    <td>@item.IdPacienteNavigation.Nombre @item.IdPacienteNavigation.Apellido</td>
-                    <td>@item.IdPacienteNavigation.Dni</td>
-                    <td>@item.IdMedicoNavigation.IdEspecialidadNavigation.Nombre</td>
-                    <td style="max-width: 130px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
-                        onmouseover="this.style.overflow='auto'; this.style.white-space='normal';"
-                        onmouseout="this.style.overflow='hidden'; this.style.white-space='nowrap';">
-                        @item.Devolucion
-                    </td>
-                    <td>Finalizado</td>
-
+                    <th scope="col">Nombre y Apellido</th>
+                    <th scope="col">DNI</th>
+                    <th>Especialidad</th>
+                    <th scope="col">Devolucion</th>
+                    <th scope="col">Estado</th>
                 </tr>
-            }
-        }
+            </thead>
+            <tbody>
+                @if (devoluciones != null)
+                {
+                    @foreach (var item in devoluciones)
+                    {
+                        <tr>
 
-    </tbody>
-</table>
+                            <td>@item.IdPacienteNavigation.Nombre @item.IdPacienteNavigation.Apellido</td>
+                            <td>@item.IdPacienteNavigation.Dni</td>
+                            <td>@item.IdMedicoNavigation.IdEspecialidadNavigation.Nombre</td>
+                            <td style="max-width: 130px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
+                                onmouseover="this.style.overflow='auto'; this.style.white-space='normal';"
+                                onmouseout="this.style.overflow='hidden'; this.style.white-space='nowrap';">
+                                @item.Devolucion
+                            </td>
+                            <td>Finalizado</td>
 
+                        </tr>
+                    }
+                }
+
+            </tbody>
+        </table>
+    </div>
+</div>

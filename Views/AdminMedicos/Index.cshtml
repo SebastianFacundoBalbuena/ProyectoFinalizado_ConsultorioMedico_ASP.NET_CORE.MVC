@@ -15,7 +15,9 @@
     </div>
 </form>
 
-<table class="table">
+<div class="row">
+    <div class="card-body" style="overflow-x: auto; -webkit-overflow-scrolling: touch;">
+        <table class="table" style="min-width: 700px; table-layout: fixed;">
     <thead style="background-color:#19191a">
         <tr>
             <th scope="col" style="color:aliceblue">Nombre</th>
@@ -62,7 +64,7 @@
 
     </tbody>
 </table>
-
+</div>
 <script src="~/js/MisScripts.js"></script>
 <input id="VariableAuxiliar" value="" type="hidden" />
 
@@ -72,6 +74,6 @@
         <a class="btn btn-outline-success" asp-controller="AdminMedicos" asp-action="AgregarMedico">Agregar nuevo Especialista</a>
     </div>
 </div>
-
+</div>
 
 

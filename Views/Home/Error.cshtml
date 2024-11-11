@@ -9,18 +9,22 @@
 <br />
 <br />
 
-<div class="card text-center" style="height:300px">
-
+<div class="row">
+<div class="card text-center" style="height:420px; display: flex; flex-direction: column;border:none">
     <div class="alert alert-dark">
         Error
     </div>
-    <div class="card-body">
+    <div class="card-body" style="flex-grow: 1; display: flex; flex-direction: column;">
         <h5 style="margin:10px" class="card-title">Hubo un error, contactarse con el desarrollador.</h5>
-        <div class="alert alert-danger" style="overflow:auto;margin:10px"><p class="card-text">@ViewData["Error"]</p></div>
+        <div class="alert alert-danger" style="margin:10px; flex-grow: 1; overflow-y: auto; max-height: 150px;">
+            <p class="card-text">@ViewData["Error"]</p>
+        </div>
         <a asp-controller="Home" asp-action="Index" class="btn btn-secondary" style="margin:15px">Volver al Inicio</a>
+        
     </div>
-    <div class="alert alert-dark">
+        
     </div>
 
 </div>
+
 
