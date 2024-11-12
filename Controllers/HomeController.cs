@@ -350,6 +350,22 @@ namespace ConsultorioMedico.Controllers
         {
             try
             {
+                var Usuario = HttpContext.Session.GetInt32("IdUsuario");
+                var Medico = HttpContext.Session.GetInt32("Admin");
+
+                if (Usuario != null)
+                {
+                    HttpContext.Session.Remove("IdUsuario");
+                    return RedirectToAction("Index", "Home");
+                }
+                else if (Medico != null)
+                {
+                    HttpContext.Session.Remove("Admin");
+                    HttpContext.Session.Remove("MedicoId");
+                    return RedirectToAction("Index", "Home");
+                }
+
+
                 Turno? devolucion = DBcontext.Turnos.Include(m => m.IdMedicoNavigation).Include(p => p.IdPacienteNavigation).Include(e => e.IdMedicoNavigation.IdEspecialidadNavigation).FirstOrDefault(x => x.Id == Id);
 
                 if (devolucion != null)
@@ -372,6 +388,23 @@ namespace ConsultorioMedico.Controllers
 
         public IActionResult Error()
         {
+
+            var Usuario = HttpContext.Session.GetInt32("IdUsuario");
+            var Medico = HttpContext.Session.GetInt32("Admin");
+
+            if (Usuario != null)
+            {
+                HttpContext.Session.Remove("IdUsuario");
+                return RedirectToAction("Index", "Home");
+            }
+            else if (Medico != null)
+            {
+                HttpContext.Session.Remove("Admin");
+                HttpContext.Session.Remove("MedicoId");
+                return RedirectToAction("Index", "Home");
+            }
+
+
             var ErrorGeneral = HttpContext.Features.Get<IExceptionHandlerFeature>();
             var Error = HttpContext.Session.GetString("Error");
 
